@@ -1,0 +1,3 @@
+# sac-shifts - automated shifts allocation application for Student Assistant Coach (SAC) in MakerspaceNYP
+
+Work in progress...
