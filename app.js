@@ -1,81 +1,25 @@
-var Airtable = require('airtable');
-require('dotenv').config();
-var base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base('appvLp8BIX7Rmbgaz');
+const express = require('express');
+const { engine } = require('express-handlebars');
+const Handlebars = require("handlebars");
+const helpers = require('./helpers/handlebars');
 
-const table = base('Availabilities')
+const app = express()
 
-const simplifiedRecord = (record) => {
-    return {
-        id: record[0].id,
-        fields: record[0].fields,
-    }
-};
+app.engine('handlebars', engine({
+	helpers: helpers,
+	defaultLayout: 'main' // Specify default template views/layout/main.handlebar 
+}));
+app.set('view engine', 'handlebars');
 
-const getRecords = async () => {
-    try {
-        const records = await table
-            .select({
-                maxRecords: 3,
-                view: "Grid view"
-            })
-            .firstPage();
-        console.log(simplifiedRecord(records));
-    }
-    catch (err) {
-        console.error(err);
-    }
+app.get('/', (req, res) => {
+  res.render('index')
+})
 
-};
+const port = 5000
 
-const getRecordById = async (id) => {
-    try {
-        const record = await table.find(id);
-        console.log(simplifiedRecord(record));
-    }
-    catch (err) {
-        console.error(err);
-    }
+app.listen(port, () => {
+  console.log(`Server started on http://localhost:${port}`);
+})
 
-};
 
-const createRecord = async (fields) => {
-    try {
-        const createdRecord = await table.create(fields);
-        console.log(simplifiedRecord(createdRecord));
-    }
-    catch (err) {
-        console.error(err);
-    }
-
-};
-
-const updateRecord = async (id, fields) => {
-    try {
-        const updatedRecord = await table.update(id, fields);
-        console.log(simplifiedRecord(updatedRecord));
-    }
-    catch (err) {
-        console.error(err);
-    }
-
-};
-
-const deleteRecord = async (id) => {
-    try {
-        const deletedRecord = await table.destroy(id);
-        console.log(minifyRecord(deletedRecord));
-    }
-    catch (err) {
-        console.error(err);
-    }
-
-};
-
-getRecords();
-
-// createRecord({
-//     Name: "Nicholas Test",
-// });
-
-// updateRecord('');
 
