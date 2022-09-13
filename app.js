@@ -1,7 +1,9 @@
 const express = require('express');
 const { engine } = require('express-handlebars');
 const Handlebars = require("handlebars");
+const path = require('path');
 const helpers = require('./helpers/handlebars');
+
 
 const app = express()
 
@@ -11,9 +13,17 @@ app.engine('handlebars', engine({
 }));
 app.set('view engine', 'handlebars');
 
-app.get('/', (req, res) => {
-  res.render('index')
-})
+app.use(express.urlencoded({
+	extended: false
+}));
+app.use(express.json());
+
+// Creates static folder for publicly accessible HTML, CSS and Javascript files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// mainRoute is declared to point to routes/main.js
+const mainRoute = require('./routes/main');
+app.use('/', mainRoute);
 
 const port = 5000
 
