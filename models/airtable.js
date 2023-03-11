@@ -1,35 +1,44 @@
 var Airtable = require('airtable');
-var base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base('appvLp8BIX7Rmbgaz');
+require('dotenv').config();
+var base = new Airtable({ apiKey: process.env.PERSONAL_ACCESS_TOKEN }).base('appvLp8BIX7Rmbgaz');
+const table = base('Admin Planner')
 
-const table = base('Availabilities')
 
-const simplifiedRecord = (record) => {
+
+const simpleRecord = (record) => {
     return {
-        id: record[0].id,
-        fields: record[0].fields,
+        id: record["id"],
+        fullName: record["fields"]["Full Name"][0],
+        adminNo: record["fields"]["Admin No"][0],
+        date: record["fields"]["Available"],
+        shiftType: record["fields"]["Shift Type"]
     }
 };
 
 const getRecords = async () => {
-    try {
-        const records = await table
-            .select({
-                maxRecords: 3,
-                view: "Grid view"
-            })
-            .firstPage();
-        console.log(simplifiedRecord(records));
-    }
-    catch (err) {
-        console.error(err);
-    }
-
+    var counter = 0
+    var avalabilities = [];
+    avalabilities.length = 0;
+    await table
+        .select({
+            view: "Grid view",
+            sort: [{ field: "Available", direction: "asc" }]
+        }).all()
+        .then((records) => {
+            records.forEach((record) => {
+                // console.log(simpleRecord(record));
+                avalabilities.push(record._rawJson)
+                counter++
+            });
+        })
+        // console.log(avalabilities);
+    return avalabilities
 };
 
 const getRecordById = async (id) => {
     try {
         const record = await table.find(id);
-        console.log(simplifiedRecord(record));
+        console.log(simpleRecord(record));
     }
     catch (err) {
         console.error(err);
@@ -40,7 +49,7 @@ const getRecordById = async (id) => {
 const createRecord = async (fields) => {
     try {
         const createdRecord = await table.create(fields);
-        console.log(simplifiedRecord(createdRecord));
+        console.log(simpleRecord(createdRecord));
     }
     catch (err) {
         console.error(err);
@@ -51,7 +60,7 @@ const createRecord = async (fields) => {
 const updateRecord = async (id, fields) => {
     try {
         const updatedRecord = await table.update(id, fields);
-        console.log(simplifiedRecord(updatedRecord));
+        console.log(simpleRecord(updatedRecord));
     }
     catch (err) {
         console.error(err);
@@ -76,4 +85,7 @@ const deleteRecord = async (id) => {
 
 // updateRecord('');
 
-module.exports = { getRecords, getRecordById, createRecord, updateRecord, deleteRecord }
+getRecords();
+
+
+module.exports = { getRecords, getRecordById, createRecord, updateRecord, deleteRecord, simpleRecord }
