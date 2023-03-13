@@ -1,0 +1,24 @@
+<div class="schedule container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="m-0">SAC Schedule</h1>
+        <form method="GET" class="row h-100 me-1">
+            <div class="col">
+                <select id="month" name="month" class="form-select">
+                    <option selected disabled>Select Month</option>
+                    {{#each month}}
+                    <option value="{{@index}}">{{this}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary col">Get Schedule</button>
+        </form>
+    </div>
+
+    <div>
+        {{#if selectedMonth includeZero=true}}
+        <h3>Month Selected {{selectedMonth}}</h3>
+        <div>{{startOfMonth}}</div>
+        <div>{{endOfMonth}}</div>
+        {{/if}}
+    </div>
+</div>

@@ -1,3 +1,7 @@
 body {
     font-family: 'Poppins', sans-serif;
 }
+
+.schedule select {
+    width: 160px;
+}
