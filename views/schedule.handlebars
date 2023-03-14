@@ -14,11 +14,55 @@
         </form>
     </div>
 
+    {{#if selectedMonth includeZero=true}}
     <div>
-        {{#if selectedMonth includeZero=true}}
-        <h3>Month Selected {{selectedMonth}}</h3>
-        <div>{{startOfMonth}}</div>
-        <div>{{endOfMonth}}</div>
-        {{/if}}
+        <h3 class="text-center">Makerspace Duty Roster</h3>
+        <table class="table table-sm text-center table-bordered">
+            <thead>
+                <tr class="table-secondary">
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each weeks}}
+                <tr class="table-light">
+                    {{#each this}}
+                    <th>{{this.day}}</th>
+                    {{/each}}
+                </tr>
+                <tr>
+                    {{#each this}}
+                    <td class="py-3">
+                        {{#if this.s1}}
+                        <div class="mb-3">
+                            <h6>Shfit 1 ({{this.s1.length}})</h6>
+                            {{#each this.s1}}
+                            <div class="SAC">{{this.fields.[Full Name]}}</div>
+                            {{/each}}
+                        </div>
+                        <div>
+                            <h6>Shfit 2 ({{this.s2.length}})</h6>
+                            {{#each this.s2}}
+                            <div class="SAC">{{this.fields.[Full Name]}}</div>
+                            {{/each}}
+                        </div>
+                        {{/if}}
+                    </td>
+                    {{/each}}
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
     </div>
+    {{else}}
+    <div>
+        <h3 class="text-danger text-center">Please select a month</h3>
+    </div>
+    {{/if}}
 </div>

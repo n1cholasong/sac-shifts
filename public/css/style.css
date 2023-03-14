@@ -5,3 +5,7 @@ body {
 .schedule select {
     width: 160px;
 }
+
+.schedule .SAC {
+    font-size: 0.8rem;
+}
