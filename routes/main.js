@@ -33,7 +33,6 @@ router.get('/availabilities/calendarView', function (req, res,) {
     let endOfMonth = new Date(y, selectedMonth + 1, 0);
     let juniorBatch = 0;
     let availabilities = [];
-    const schedule = [];
     const days = [];
     const weeks = [];
 
@@ -90,7 +89,7 @@ router.get('/schedule', function (req, res) {
     let selectedMonth = parseInt(req.query.month);
     const d = new Date(), y = d.getFullYear();
     let startOfMonth = new Date(y, selectedMonth, 1);
-    let endOfMonth = new Date(y, selectedMonth, 3);
+    let endOfMonth = new Date(y, selectedMonth + 1, 0);
     let juniorBatch = 0;
     let availabilities = [];
     const schedule = [];
@@ -203,17 +202,23 @@ router.get('/schedule', function (req, res) {
                 schedule.push(roster);
             });
             console.log("AFTER")
-            console.log(days)
+            console.log(schedule)
 
             // console.log(schedule);
             console.log("Secnior list")
             schedule.forEach((roster) => {
                 console.log("========== SHIFT 1 ==========")
                 roster.shift1.forEach((sac) => {
+                    let weekends = moment(sac.fields.Available).day();
+                    if (weekends == 0 || weekends == 6) {return false;}
+
                     console.log(sac.fields['Full Name'], sac.fields['Shift Type'], sac.fields.Available)
                 })
                 console.log("========== SHIFT 2 ==========")
                 roster.shift2.forEach((sac) => {
+                    let weekends = moment(sac.fields.Available).day();
+                    if (weekends == 0 || weekends == 6) {return false;}
+
                     console.log(sac.fields['Full Name'], sac.fields['Shift Type'], sac.fields.Available)
                 })
             })
