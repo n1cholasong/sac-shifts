@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "airtable": "^0.11.4",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-handlebars": "^6.0.6",
+    "fullcalendar": "^6.1.4",
+    "handlebars": "^4.7.7",
+    "moment": "^2.29.4"
+  },
+  "name": "sac-shifts",
+  "version": "1.0.0",
+  "description": "an automated shift allocation web app",
+  "main": "app.js",
+  "scripts": {
+    "test": ""
+  },
+  "author": "n1cholasong",
+  "license": "ISC"
+}

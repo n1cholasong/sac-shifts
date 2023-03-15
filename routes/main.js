@@ -37,6 +37,10 @@ router.get('/schedule', function (req, res) {
     const days = [];
     const weeks = [];
 
+
+    let rosterShift1 = [];
+    let rosterShift2 = [];
+
     Shift.getRecords()
         .then((SAC) => {
             console.log(SAC[0]) // JSON reference
@@ -50,15 +54,14 @@ router.get('/schedule', function (req, res) {
             })
             console.log(availabilities.length);
 
-
             for (let date = new Date(startOfMonth); date <= endOfMonth; date.setDate(date.getDate() + 1)) {
                 // if (date.getDay() == 0 || date.getDay() == 6) { continue; }
 
+                // Filter SAC on Shift 1 and Shift 2 for the respective day
                 let shift1 = availabilities
                     .filter((sac =>
                         sac.fields.Available == moment(date).format('YYYY-MM-DD') && parseInt(sac.fields['Shift Type'].slice(-1)) === 1
                     ));
-
                 let shift2 = availabilities
                     .filter((sac =>
                         // available = new Date(sac.fields.Available)
@@ -66,59 +69,99 @@ router.get('/schedule', function (req, res) {
                         sac.fields.Available == moment(date).format('YYYY-MM-DD') && parseInt(sac.fields['Shift Type'].slice(-1)) === 2
                     ));
 
+
+
                 // console.log(`--------------------${moment(date).format('ddd DD MMM YYYY')}--------------------`)
                 // console.log(`Shift 1: ${shift1.length}`);
                 // console.log(`Shift 2: ${shift2.length}`);
                 // console.log(shift1)
                 // console.log(shift2)
-                let day = moment(date).format('D MMM');
 
+
+                let day = moment(date).format('YYYY-MM-DD');
                 let s1 = (shift1.length > 0) ? shuffleArray(shift1) : '';
                 let s2 = (shift2.length > 0) ? shuffleArray(shift2) : '';
                 let shifts = { day, s1, s2 }
                 days.push(shifts);
+            }
+            console.log("BEFORE")
+            console.log(days)
 
-                // console.log(schedule);
-
-                // Shift allocation
+            // Shift allocation
+            days.forEach((shift) => {
                 let seniorShift1 = false;
                 let seniorShift2 = false;
-                let rosterShift1 = [];
-                let rosterShift2 = [];
+                let day = shift.day;
+                let shift1 = [];
+                let shift2 = [];
+                let roster = { day, shift1, shift2 }
 
-                if (shift1.length > 0) {
-                    for (const student of s1) {
-                        if (parseInt(student.fields.Batch[0].slice(6)) !== juniorBatch && !seniorShift1) {
-                            rosterShift1.push(student);
-                            s1.pop(student)
-                            seniorShift1 = true;
-                        }
+                //Assign at least one senior SAC to Shift1
+                for (const student of shift.s1) {
+                    if (seniorShift1) { break; }
+                    if (parseInt(student.fields.Batch[0].slice(6)) !== juniorBatch) {
+                        shift1.push(student);
+                        shift.s1.shift()
+                        seniorShift1 = true;
+                    } else {
+                        continue;
+                    }
+                }
+                if (shift1.length == 0) {
+                    shift1.push({ fields: { Available: moment(shift.day).format('YYYY-MM-DD'), 'Full Name': ['No Senior available!'] } });
+                }
+                //Add remaining SAC to Shift1
+                for (let i = 0; i < 2; i++) {
+                    if (shift1.length !== 3 && shift.s1[i] !== undefined) {
+                        shift1.push(shift.s1[i]);
+                        // shift.s1.shift();
+                    } else {
+                        shift1.push({ fields: { Available: moment(shift.day).format('YYYY-MM-DD'), 'Full Name': ['No SAC available!'] } });
                     }
                 }
 
-                if (shift2.length > 0) {
-                    for (const student of s2) {
-                        if (parseInt(student.fields.Batch[0].slice(6)) !== juniorBatch && !seniorShift2) {
-                            rosterShift2.push(student);
-                            s2.pop(student)
-                            seniorShift2 = true;
-                        }
+                //Assign at least one senior SAC to Shift2   
+                for (const student of shift.s2) {
+                    if (seniorShift2) { break; }
+                    if (parseInt(student.fields.Batch[0].slice(6)) !== juniorBatch) {
+                        shift2.push(student);
+                        shift.s2.shift();
+                        seniorShift2 = true;
+                    } else {
+                        continue;
+                    }
+                }
+                if (shift2.length == 0) {
+                    shift2.push({ fields: { Available: moment(shift.day).format('YYYY-MM-DD'), 'Full Name': ['No Senior available!'] } });
+                }
+                //Add remaining SAC to Shift2 
+                for (let i = 0; i < 2; i++) {
+                    if (shift2.length !== 3 && shift.s2[i] !== undefined) {
+                        shift2.push(shift.s2[i]);
+                        // shift.s2.shift();
+                    } else {
+                        shift2.push({ fields: { Available: moment(shift.day).format('YYYY-MM-DD'), 'Full Name': ['No SAC available!'] } });
                     }
                 }
 
-                // console.log(rosterShift1)
-                // console.log(rosterShift2)
-                console.log("SHIFT 1")
-                rosterShift1.forEach((sac) => {
-                    console.log(sac.fields['Full Name'], sac.fields['Shift Type'])
-                })
-                console.log("SHIFT 2")
-                rosterShift2.forEach((sac) => {
-                    console.log(sac.fields['Full Name'], sac.fields['Shift Type'])
-                })
-            }
+                schedule.push(roster);
+            });
+            console.log("AFTER")
+            console.log(days)
 
-            // Separate list into weeks 
+            // console.log(schedule);
+            console.log("Secnior list")
+            schedule.forEach((roster) => {
+                console.log("========== SHIFT 1 ==========")
+                roster.shift1.forEach((sac) => {
+                    console.log(sac.fields['Full Name'], sac.fields['Shift Type'], sac.fields.Available)
+                })
+                console.log("========== SHIFT 2 ==========")
+                roster.shift2.forEach((sac) => {
+                    console.log(sac.fields['Full Name'], sac.fields['Shift Type'], sac.fields.Available)
+                })
+            })
+
             const firstDayIndex = startOfMonth.getDay();
             const lastDayIndex = endOfMonth.getDay();
 
@@ -128,14 +171,14 @@ router.get('/schedule', function (req, res) {
 
             // console.log(weeks);
             res.render('schedule', { title, month, selectedMonth, startOfMonth, endOfMonth, weeks })
+
         });
-})
+});
 
 // router.post('/schedule', function (req, res) {
 //     var selectedMonth = encodeURIComponent(req.body.month);
 //     res.redirect('/schedule?month=' + selectedMonth);
 // })
-
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
