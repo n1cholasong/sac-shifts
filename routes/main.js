@@ -227,12 +227,12 @@ router.get('/schedule', function (req, res) {
             const firstDayIndex = startOfMonth.getDay();
             const lastDayIndex = endOfMonth.getDay();
 
-            for (let i = 0; i < firstDayIndex; i++) { days.unshift({ day: '', shift1: '', shift2: '' }); }
-            for (let i = lastDayIndex; i < 6; i++) { days.push({ day: '', shift1: '', shift2: '' }); }
-            while (days.length > 0) { weeks.push(days.splice(0, 7)); }
+            for (let i = 0; i < firstDayIndex; i++) { schedule.unshift({ day: '', shift1: '', shift2: '' }); }
+            for (let i = lastDayIndex; i < 6; i++) { schedule.push({ day: '', shift1: '', shift2: '' }); }
+            while (schedule.length > 0) { weeks.push(schedule.splice(0, 7)); }
 
             // console.log(weeks);
-            res.render('schedule', { title, month, selectedMonth, startOfMonth, endOfMonth, weeks })
+            res.render('schedule', { title, month, selectedMonth, weeks })
         });
 });
 
