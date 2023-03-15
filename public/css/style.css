@@ -2,10 +2,12 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
-.schedule select {
+.schedule select,
+.availabilities select {
     width: 160px;
 }
 
-.schedule .SAC {
+.schedule .SAC,
+.availabilities .SAC {
     font-size: 0.8rem;
 }

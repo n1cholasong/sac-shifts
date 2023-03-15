@@ -17,8 +17,8 @@ const simpleRecord = (record) => {
 
 const getRecords = async () => {
     var counter = 0
-    var avalabilities = [];
-    avalabilities.length = 0;
+    var availabilities = [];
+    availabilities.length = 0;
     await table
         .select({
             view: "Grid view",
@@ -27,12 +27,12 @@ const getRecords = async () => {
         .then((records) => {
             records.forEach((record) => {
                 // console.log(simpleRecord(record));
-                avalabilities.push(record._rawJson)
+                availabilities.push(record._rawJson)
                 counter++
             });
         })
-        // console.log(avalabilities);
-    return avalabilities
+        // console.log(availabilities);
+    return availabilities
 };
 
 const getRecordById = async (id) => {

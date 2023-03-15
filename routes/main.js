@@ -16,13 +16,73 @@ router.get('/form', function (req, res,) {
     res.render('form', { title });
 })
 
-router.get('/availabilities', function (req, res,) {
+router.get('/availabilities/listView', function (req, res,) {
     title = "SAC Availabilities";
     Shift.getRecords()
         .then((SAC) => {
-            res.render('available', { title, SAC });
+            res.render('availabilities/listView', { title, SAC });
         });
 })
+
+router.get('/availabilities/calendarView', function (req, res,) {
+    const title = "SAC Availabilities";
+    const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    let selectedMonth = parseInt(req.query.month);
+    const d = new Date(), y = d.getFullYear();
+    let startOfMonth = new Date(y, selectedMonth, 1);
+    let endOfMonth = new Date(y, selectedMonth + 1, 0);
+    let juniorBatch = 0;
+    let availabilities = [];
+    const schedule = [];
+    const days = [];
+    const weeks = [];
+
+    Shift.getRecords()
+        .then((SAC) => {
+            console.log(SAC[0]) // JSON reference
+
+            SAC.forEach((record) => {
+                availabilities.push(record);
+                var batchNo = parseInt(record.fields.Batch[0].slice(6));
+                if (batchNo > juniorBatch) {
+                    juniorBatch = batchNo;
+                }
+            })
+            console.log(availabilities.length);
+
+            for (let date = new Date(startOfMonth); date <= endOfMonth; date.setDate(date.getDate() + 1)) {
+                // if (date.getDay() == 0 || date.getDay() == 6) { continue; }
+
+                // Filter SAC on Shift 1 and Shift 2 for the respective day
+                let shift1 = availabilities
+                    .filter((sac =>
+                        sac.fields.Available == moment(date).format('YYYY-MM-DD') && parseInt(sac.fields['Shift Type'].slice(-1)) === 1
+                    ));
+                let shift2 = availabilities
+                    .filter((sac =>
+                        // available = new Date(sac.fields.Available)
+                        // date = new Date(2023, 1, 3)
+                        sac.fields.Available == moment(date).format('YYYY-MM-DD') && parseInt(sac.fields['Shift Type'].slice(-1)) === 2
+                    ));
+
+                let day = moment(date).format('D MMM');
+                let s1 = (shift1.length > 0) ? shuffleArray(shift1) : '';
+                let s2 = (shift2.length > 0) ? shuffleArray(shift2) : '';
+                let shifts = { day, s1, s2 }
+                days.push(shifts);
+            }
+
+            //Format shift schedule into weeks 
+            const firstDayIndex = startOfMonth.getDay();
+            const lastDayIndex = endOfMonth.getDay();
+
+            for (let i = 0; i < firstDayIndex; i++) { days.unshift({ day: '', shift1: '', shift2: '' }); }
+            for (let i = lastDayIndex; i < 6; i++) { days.push({ day: '', shift1: '', shift2: '' }); }
+            while (days.length > 0) { weeks.push(days.splice(0, 7)); }
+
+            res.render('availabilities/calendarView', { title, month, selectedMonth, weeks })
+        });
+});
 
 router.get('/schedule', function (req, res) {
     const title = "SAC Schedule";
@@ -36,10 +96,6 @@ router.get('/schedule', function (req, res) {
     const schedule = [];
     const days = [];
     const weeks = [];
-
-
-    let rosterShift1 = [];
-    let rosterShift2 = [];
 
     Shift.getRecords()
         .then((SAC) => {
@@ -162,6 +218,7 @@ router.get('/schedule', function (req, res) {
                 })
             })
 
+            //Format shift schedule into weeks 
             const firstDayIndex = startOfMonth.getDay();
             const lastDayIndex = endOfMonth.getDay();
 
@@ -171,7 +228,6 @@ router.get('/schedule', function (req, res) {
 
             // console.log(weeks);
             res.render('schedule', { title, month, selectedMonth, startOfMonth, endOfMonth, weeks })
-
         });
 });
 
