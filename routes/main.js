@@ -31,56 +31,56 @@ router.get('/availabilities/calendarView', function (req, res,) {
     const d = new Date(), y = d.getFullYear();
     let startOfMonth = new Date(y, selectedMonth, 1);
     let endOfMonth = new Date(y, selectedMonth + 1, 0);
-    let juniorBatch = 0;
     let availabilities = [];
     const days = [];
     const weeks = [];
 
-    Shift.getRecords()
-        .then((SAC) => {
-            console.log(SAC[0]) // JSON reference
+    if (isNaN(selectedMonth)) {
+        res.render('availabilities/calendarView', { title, month, selectedMonth })
+    } else {
+        Shift.getRecords()
+            .then((SAC) => {
+                console.log(SAC[0]) // JSON Reference
+                console.log("Selected Month", selectedMonth)
+                console.log("Start of Month", startOfMonth)
+                console.log("End of Month", endOfMonth)
+                for (let date = new Date(startOfMonth); date <= endOfMonth; date.setDate(date.getDate() + 1)) {
+                    console.log("Date in loop", date)
+                    // if (date.getDay() == 0 || date.getDay() == 6) { continue; }
 
-            SAC.forEach((record) => {
-                availabilities.push(record);
-                var batchNo = parseInt(record.fields.Batch[0].slice(6));
-                if (batchNo > juniorBatch) {
-                    juniorBatch = batchNo;
+                    // Filter SAC on Shift 1 and Shift 2 for the respective day
+                    let shift1 = SAC
+                        .filter((sac =>
+                            sac.fields.Available == moment(date).format('YYYY-MM-DD') && parseInt(sac.fields['Shift Type'].slice(-1)) === 1
+                        ));
+                    let shift2 = SAC
+                        .filter((sac =>
+                            sac.fields.Available == moment(date).format('YYYY-MM-DD') && parseInt(sac.fields['Shift Type'].slice(-1)) === 2
+                        ));
+
+                    console.log(shift1)
+                    console.log(shift2)
+
+                    let day = moment(date).format('D MMM');
+                    let s1 = (shift1.length > 0) ? shuffleArray(shift1) : '';
+                    let s2 = (shift2.length > 0) ? shuffleArray(shift2) : '';
+                    let shifts = { day, s1, s2 }
+                    days.push(shifts);
                 }
-            })
-            console.log(availabilities.length);
+                console.log(days)
 
-            for (let date = new Date(startOfMonth); date <= endOfMonth; date.setDate(date.getDate() + 1)) {
-                // if (date.getDay() == 0 || date.getDay() == 6) { continue; }
+                //Format shift schedule into weeks 
+                const firstDayIndex = startOfMonth.getDay();
+                const lastDayIndex = endOfMonth.getDay();
 
-                // Filter SAC on Shift 1 and Shift 2 for the respective day
-                let shift1 = availabilities
-                    .filter((sac =>
-                        sac.fields.Available == moment(date).format('YYYY-MM-DD') && parseInt(sac.fields['Shift Type'].slice(-1)) === 1
-                    ));
-                let shift2 = availabilities
-                    .filter((sac =>
-                        // available = new Date(sac.fields.Available)
-                        // date = new Date(2023, 1, 3)
-                        sac.fields.Available == moment(date).format('YYYY-MM-DD') && parseInt(sac.fields['Shift Type'].slice(-1)) === 2
-                    ));
+                for (let i = 0; i < firstDayIndex; i++) { days.unshift({ day: '', shift1: '', shift2: '' }); }
+                for (let i = lastDayIndex; i < 6; i++) { days.push({ day: '', shift1: '', shift2: '' }); }
+                while (days.length > 0) { weeks.push(days.splice(0, 7)); }
 
-                let day = moment(date).format('D MMM');
-                let s1 = (shift1.length > 0) ? shuffleArray(shift1) : '';
-                let s2 = (shift2.length > 0) ? shuffleArray(shift2) : '';
-                let shifts = { day, s1, s2 }
-                days.push(shifts);
-            }
+                res.render('availabilities/calendarView', { title, month, selectedMonth, weeks })
+            });
+    }
 
-            //Format shift schedule into weeks 
-            const firstDayIndex = startOfMonth.getDay();
-            const lastDayIndex = endOfMonth.getDay();
-
-            for (let i = 0; i < firstDayIndex; i++) { days.unshift({ day: '', shift1: '', shift2: '' }); }
-            for (let i = lastDayIndex; i < 6; i++) { days.push({ day: '', shift1: '', shift2: '' }); }
-            while (days.length > 0) { weeks.push(days.splice(0, 7)); }
-
-            res.render('availabilities/calendarView', { title, month, selectedMonth, weeks })
-        });
 });
 
 router.get('/schedule', function (req, res) {
@@ -96,6 +96,9 @@ router.get('/schedule', function (req, res) {
     const days = [];
     const weeks = [];
 
+    if (isNaN(selectedMonth)) {
+        res.render('schedule', { title, month, selectedMonth })
+    }
     Shift.getRecords()
         .then((SAC) => {
             console.log(SAC[0]) // JSON reference
@@ -123,8 +126,6 @@ router.get('/schedule', function (req, res) {
                         // date = new Date(2023, 1, 3)
                         sac.fields.Available == moment(date).format('YYYY-MM-DD') && parseInt(sac.fields['Shift Type'].slice(-1)) === 2
                     ));
-
-
 
                 // console.log(`--------------------${moment(date).format('ddd DD MMM YYYY')}--------------------`)
                 // console.log(`Shift 1: ${shift1.length}`);
@@ -210,14 +211,14 @@ router.get('/schedule', function (req, res) {
                 console.log("========== SHIFT 1 ==========")
                 roster.shift1.forEach((sac) => {
                     let weekends = moment(sac.fields.Available).day();
-                    if (weekends == 0 || weekends == 6) {return false;}
+                    if (weekends == 0 || weekends == 6) { return false; }
 
                     console.log(sac.fields['Full Name'], sac.fields['Shift Type'], sac.fields.Available)
                 })
                 console.log("========== SHIFT 2 ==========")
                 roster.shift2.forEach((sac) => {
                     let weekends = moment(sac.fields.Available).day();
-                    if (weekends == 0 || weekends == 6) {return false;}
+                    if (weekends == 0 || weekends == 6) { return false; }
 
                     console.log(sac.fields['Full Name'], sac.fields['Shift Type'], sac.fields.Available)
                 })

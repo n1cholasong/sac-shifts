@@ -33,7 +33,11 @@
                 {{#each weeks}}
                 <tr class="table-light">
                     {{#each this}}
-                    <th>{{this.day}}</th>
+                    {{#ifEquals this.day ''}}
+                    <th></th>
+                    {{else}}
+                    <th>{{formatDate this.day 'D MMM'}}</th>
+                    {{/ifEquals}}
                     {{/each}}
                 </tr>
                 <tr>
@@ -45,7 +49,7 @@
                             <div class="SAC">
                                 <ol>
                                     {{#each this.shift1}}
-                                    <li>{{this.fields.[Full Name]}}</li>
+                                    <li class="{{#isSAC this.fields.[Full Name]}}{{/isSAC}}">{{this.fields.[Full Name]}}</li>
                                     {{/each}}
                                 </ol>
                             </div>
@@ -55,7 +59,7 @@
                             <div class="SAC">
                                 <ol>
                                     {{#each this.shift2}}
-                                    <li>{{this.fields.[Full Name]}}</li>
+                                    <li class="{{#isSAC this.fields.[Full Name]}}{{/isSAC}}">{{this.fields.[Full Name]}}</li>
                                     {{/each}}
                                 </ol>
                             </div>
