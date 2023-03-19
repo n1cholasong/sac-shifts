@@ -94,7 +94,8 @@ router.get('/schedule', function (req, res) {
     let availabilities = [];
     const schedule = [];
     const days = [];
-    const weeks = [];
+    const weeklySchedule = [];
+    const weeklyRemainder = []
 
     if (isNaN(selectedMonth)) {
         res.render('schedule', { title, month, selectedMonth })
@@ -147,78 +148,54 @@ router.get('/schedule', function (req, res) {
 
             // Shift allocation
             days.forEach((shift) => {
-                let seniorShift1 = false;
-                let seniorShift2 = false;
-                let day = shift.day;
+                const day = shift.day;
+                let allocatedSAC = [];
                 let shift1 = [];
                 let shift2 = [];
-                let roster = { day, shift1, shift2 }
+                const roster = { day, shift1, shift2 }
 
-                let allocationShift1 = [];
-                let allocationShift2 = [];
-
-                console.log("This is a test", allocationShift1);
-                console.log("This is a test", allocationShift2);
-                //Assign at least one senior SAC to Shift1
-                for (let i = 0; i < shift.s1.length; i++) {
-                    if (seniorShift1) { break; }
-                    if (parseInt(shift.s1[i].fields.Batch[0].slice(6)) !== juniorBatch) {
-                        shift1.push(shift.s1[i]);
-                        shift.s1.splice(i, 1);
-                        seniorShift1 = true;
-                    } else {
+                function allocateShift(shiftSource, shiftTarget) {
+                    let seniorShift = false;
+                    //Assign at least one senior to shift
+                    for (let i = 0; i < shiftSource.length; i++) {
+                        if (seniorShift) { break; }
+                        if (parseInt(shiftSource[i].fields.Batch[0].slice(6)) !== juniorBatch) {
+                            const adminNo = shiftSource[i].fields.AdminNo[0];
+                            if (!allocatedSAC.includes(adminNo)) {
+                                shiftTarget.push(shiftSource[i]);
+                                shiftSource.splice(i, 1);
+                                allocatedSAC.push(adminNo);
+                                seniorShift = true;
+                            }
+                        }
                         continue;
                     }
-                }
-                if (shift1.length == 0) {
-                    shift1.push({ fields: { Available: moment(shift.day).format('YYYY-MM-DD'), 'Full Name': ['No Senior available!'] } });
-                }
-                //Add remaining SAC to Shift1
-                for (let i = 0; i < 2; i++) {
-                    if (shift.s1.length === 0 || shift.s1[0] === undefined) {
-                        shift1.push({ fields: { Available: moment(shift.day).format('YYYY-MM-DD'), 'Full Name': ['No SAC available!'] } });
-                    } else {
-                        let sac = shift.s1.shift();
-                        shift1.push(sac);
+                    if (shiftTarget.length == 0) {
+                        shiftTarget.push({ fields: { Available: moment(shift.day).format('YYYY-MM-DD'), 'Full Name': ['No Senior available!'] } });
+                    }
+                    //Add remaining SAC to Shift
+                    let i = 0;
+                    while (shiftTarget.length < 3 && shiftSource.length > 0 && i < shiftSource.length) {
+                        const adminNo = shiftSource[i].fields.AdminNo[0];
+                        if (!allocatedSAC.includes(adminNo)) {
+                            shiftTarget.push(shiftSource[i]);
+                            shiftSource.splice(i, 1);
+                            allocatedSAC.push(adminNo);
+                        } else {
+                            i++;
+                        }
+                    }
+                    while (shiftTarget.length < 3) {
+                        shiftTarget.push({ fields: { Available: moment(shift.day).format('YYYY-MM-DD'), 'Full Name': ['No SAC available!'] } });
                     }
                 }
 
-                // for (let i = 0; i < 2; i++) {
-                //     if (shift1.length !== 3 && shift.s1[i] !== undefined) {
-                //         shift1.push(shift.s1[i]);
-                //         shift.s1.splice(i, 1)
-                //         // allocationShift1.push(shift.s1[i].id)
-                //     } else {
-                //         shift1.push({ fields: { Available: moment(shift.day).format('YYYY-MM-DD'), 'Full Name': ['No SAC available!'] } });
-                //     }
-                // }
-                // console.log(allocationShift1);
-                // allocationShift1.forEach((SAC) => {
-                //     if (SAC.id == )
-                // })
-
-                //Assign at least one senior SAC to Shift2   
-                for (let i = 0; i < shift.s2.length; i++) {
-                    if (seniorShift2) { break; }
-                    if (parseInt(shift.s2[i].fields.Batch[0].slice(6)) !== juniorBatch) {
-                        shift2.push(shift.s2[i]);
-                        shift.s2.splice(i, 1);
-                        seniorShift2 = true;
-                    } else {
-                        continue;
-                    }
-                }
-                if (shift2.length == 0) {
-                    shift2.push({ fields: { Available: moment(shift.day).format('YYYY-MM-DD'), 'Full Name': ['No Senior available!'] } });
-                }
-                //Add remaining SAC to Shift2
-                for (let i = 0; i < 2; i++) {
-                    if (shift.s2.length === 0 || shift.s2[0] === undefined) {
-                        shift2.push({ fields: { Available: moment(shift.day).format('YYYY-MM-DD'), 'Full Name': ['No SAC available!'] } });
-                    } else {
-                        let sac = shift.s2.shift();
-                        shift2.push(sac);
-                    }
+                if (shift.s1.length < shift.s2.length) {
+                    allocateShift(shift.s1, shift1)
+                    allocateShift(shift.s2, shift2)
+                } else {
+                    allocateShift(shift.s2, shift2)
+                    allocateShift(shift.s1, shift1)
                 }
 
                 schedule.push(roster);
@@ -243,16 +220,21 @@ router.get('/schedule', function (req, res) {
                 })
             })
 
-            //Format shift schedule into weeks 
             const firstDayIndex = startOfMonth.getDay();
             const lastDayIndex = endOfMonth.getDay();
 
+            //Format shift schedule into weeks 
+            for (let i = 0; i < firstDayIndex; i++) { schedule.unshift({ day: '', shift1: '', shift2: '' }); }
+            for (let i = lastDayIndex; i < 6; i++) { schedule.push({ day: '', shift1: '', shift2: '' }); }
+            while (schedule.length > 0) { weeklySchedule.push(schedule.splice(0, 7)); }
+
+            //Format remainingshift availabilities into weeks
             for (let i = 0; i < firstDayIndex; i++) { days.unshift({ day: '', shift1: '', shift2: '' }); }
             for (let i = lastDayIndex; i < 6; i++) { days.push({ day: '', shift1: '', shift2: '' }); }
-            while (days.length > 0) { weeks.push(days.splice(0, 7)); }
+            while (days.length > 0) { weeklyRemainder.push(days.splice(0, 7)); }
 
             // console.log(weeks);
-            res.render('schedule', { title, month, selectedMonth, weeks })
+            res.render('schedule', { title, month, selectedMonth, weeklySchedule, weeklyRemainder })
         });
 });
 
