@@ -119,10 +119,10 @@ router.get('/schedule', function (req, res) {
                 // if (date.getDay() == 0 || date.getDay() == 6) { continue; }
 
                 // Filter SAC on Shift 1 and Shift 2 for the respective day
-                let shift1 = availabilities
+                let shift1 =  
                     .filter((sac =>
-                        sac.fields.Available == moment(date).format('YYYY-MM-DD') && parseInt(sac.fields['Shift Type'].slice(-1)) === 1
-                    ));
+                    sac.fields.Available == moment(date).format('YYYY-MM-DD') && parseInt(sac.fields['Shift Type'].slice(-1)) === 1
+                ));
                 let shift2 = availabilities
                     .filter((sac =>
                         // available = new Date(sac.fields.Available)
@@ -249,6 +249,21 @@ function shuffleArray(array) {
         [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
+}
+
+function countShiftFrequency(array1, array2) {
+    const combinedArray = array1.concat(array2);
+    const elementFrequency = combinedArray.reduce((count, element) => {
+        count[element] = (count[element] || 0) + 1;
+        return count;
+    }, {});
+    const sortedFrequency = {};
+    Object.keys(elementFrequency)
+        .sort((a, b) => elementFrequency[a] - elementFrequency[b])
+        .forEach((key) => {
+            sortedFrequency[key] = elementFrequency[key];
+        });
+    return sortedFrequency;
 }
 
 module.exports = router;
