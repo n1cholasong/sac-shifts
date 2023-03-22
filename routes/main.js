@@ -106,16 +106,17 @@ router.get('/schedule', function (req, res) {
         .then((SAC) => {
             console.log(SAC[0]) // JSON reference
 
-            //Check for junior batch
             SAC.forEach((record) => {
-                availabilities.push(record);
+                availabilities.push(record); // Populate the avalabilities array
+                // Look for junior batch
                 const batchNo = parseInt(record.fields.Batch[0].slice(6));
                 if (batchNo > juniorBatch) {
-                    juniorBatch = batchNo; //Takes the highest batch no.
+                    juniorBatch = batchNo; // Takes the highest batch no.
                 }
+                // Populate dictionary with adminNo for shift frequency
                 const adminNo = record.fields.AdminNo[0];
                 if (!(adminNo in availableSAC)) {
-                    availableSAC[adminNo] = 0;
+                    availableSAC[adminNo] = 0; // Defaults to 0
                 }
             })
 
@@ -151,7 +152,7 @@ router.get('/schedule', function (req, res) {
 
             // Shift allocation
             days.forEach((shift) => {
-                let allocation = []; //Stores AdminNo to prevent SACs getting assigned 2 shifts in a day 
+                let allocation = []; // Stores AdminNo to prevent SACs getting assigned 2 shifts in a day 
                 const day = shift.day;
                 let shift1 = [];
                 let shift2 = [];
@@ -180,7 +181,7 @@ router.get('/schedule', function (req, res) {
                     if (shiftTarget.length == 0) {
                         shiftTarget.push({ fields: { Available: moment(shift.day).format('YYYY-MM-DD'), 'Full Name': ['No Senior available!'] } });
                     }
-                    //Add remaining SAC to Shift
+                    // Add remaining SAC to Shift
                     let i = 0;
                     while (shiftTarget.length < 3 && shiftSource.length > 0 && i < shiftSource.length) {
                         const adminNo = shiftSource[i].fields.AdminNo[0];
