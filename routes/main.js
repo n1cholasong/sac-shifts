@@ -80,7 +80,6 @@ router.get('/availabilities/calendarView', function (req, res,) {
                 res.render('availabilities/calendarView', { title, month, selectedMonth, weeks })
             });
     }
-
 });
 
 router.get('/schedule', function (req, res) {
@@ -95,25 +94,34 @@ router.get('/schedule', function (req, res) {
     const schedule = [];
     const days = [];
     const weeklySchedule = [];
-    const weeklyRemainder = []
+    const weeklyRemainder = [];
+    let availableSAC = {};
+
 
     if (isNaN(selectedMonth)) {
         res.render('schedule', { title, month, selectedMonth })
     }
+
     Shift.getRecords()
         .then((SAC) => {
             console.log(SAC[0]) // JSON reference
 
-            //Check for junior batch (take the highest batch no.)
+            //Check for junior batch
             SAC.forEach((record) => {
                 availabilities.push(record);
-                var batchNo = parseInt(record.fields.Batch[0].slice(6));
+                const batchNo = parseInt(record.fields.Batch[0].slice(6));
                 if (batchNo > juniorBatch) {
-                    juniorBatch = batchNo;
+                    juniorBatch = batchNo; //Takes the highest batch no.
+                }
+                const adminNo = record.fields.AdminNo[0];
+                if (!(adminNo in availableSAC)) {
+                    availableSAC[adminNo] = 0;
                 }
             })
+
             console.log(availabilities.length);
             console.log(juniorBatch);
+            console.log(availableSAC);
 
             for (let date = new Date(startOfMonth); date <= endOfMonth; date.setDate(date.getDate() + 1)) {
                 // if (date.getDay() == 0 || date.getDay() == 6) { continue; }
@@ -122,39 +130,29 @@ router.get('/schedule', function (req, res) {
                 let shift1 = availabilities
                     .filter((sac =>
                         sac.fields.Available == moment(date).format('YYYY-MM-DD') && parseInt(sac.fields['Shift Type'].slice(-1)) === 1
-                    )).sort((a, b) => a.fields.PriorityScore - b.fields.PriorityScore);
+                    ));
                 let shift2 = availabilities
                     .filter((sac =>
-                        // available = new Date(sac.fields.Available)
-                        // date = new Date(2023, 1, 3)
                         sac.fields.Available == moment(date).format('YYYY-MM-DD') && parseInt(sac.fields['Shift Type'].slice(-1)) === 2
-                    )).sort((a, b) => a.fields.PriorityScore - b.fields.PriorityScore);
+                    ));
 
-                // console.log(`--------------------${moment(date).format('ddd DD MMM YYYY')}--------------------`)
-                // console.log(`Shift 1: ${shift1.length}`);
-                // console.log(`Shift 2: ${shift2.length}`);
-                // console.log(shift1)
-                // console.log(shift2)
-
-                console.log("=====", date, "=====")
-                console.log("Shift 1")
-                shift1.forEach((sac) => { console.log(sac.fields['Full Name'], sac.fields.PriorityScore) }, "TEST") // LOG TEST
-                console.log("Shift 2")
-                shift2.forEach((sac) => { console.log(sac.fields['Full Name'], sac.fields.PriorityScore) }, "TEST") // LOG TEST
+                // console.log("=====", date, "=====")
+                // console.log("Shift 1")
+                // shift1.forEach((sac) => { console.log(sac.fields['Full Name'], sac.fields.PriorityScore) }, "TEST") // LOG TEST
+                // console.log("Shift 2")
+                // shift2.forEach((sac) => { console.log(sac.fields['Full Name'], sac.fields.PriorityScore) }, "TEST") // LOG TEST
 
                 let day = moment(date).format('YYYY-MM-DD');
-                let s1 = (shift1.length > 0) ? shift1 : '';
-                let s2 = (shift2.length > 0) ? shift2 : '';
+                let s1 = (shift1.length > 0) ? shuffleArray(shift1).sort((a, b) => a.fields.PriorityScore - b.fields.PriorityScore) : [];
+                let s2 = (shift2.length > 0) ? shuffleArray(shift2).sort((a, b) => a.fields.PriorityScore - b.fields.PriorityScore) : [];
                 let shifts = { day, s1, s2 }
                 days.push(shifts);
             }
-            // console.log("BEFORE")
-            // console.log(days)
 
             // Shift allocation
             days.forEach((shift) => {
+                let allocation = []; //Stores AdminNo to prevent SACs getting assigned 2 shifts in a day 
                 const day = shift.day;
-                let allocatedSAC = [];
                 let shift1 = [];
                 let shift2 = [];
                 const roster = { day, shift1, shift2 }
@@ -163,15 +161,17 @@ router.get('/schedule', function (req, res) {
                     let seniorShift = false;
                     //Assign at least one senior to shift
                     for (let i = 0; i < shiftSource.length; i++) {
-
                         // console.log(shiftSource[i].fields['Full Name'], shiftSource[i].fields.PriorityScore); // LOG TEST
                         if (seniorShift) { break; }
                         if (parseInt(shiftSource[i].fields.Batch[0].slice(6)) !== juniorBatch) {
                             const adminNo = shiftSource[i].fields.AdminNo[0];
-                            if (!allocatedSAC.includes(adminNo)) {
+                            const name = shiftSource[i].fields['Full Name'][0];
+                            if (!allocation.includes(adminNo)) {
                                 shiftTarget.push(shiftSource[i]);
                                 shiftSource.splice(i, 1);
-                                allocatedSAC.push(adminNo);
+                                allocation.push(adminNo);
+                                availableSAC[adminNo] += 1;
+                                // availableSAC.push(name);
                                 seniorShift = true;
                             }
                         }
@@ -184,10 +184,13 @@ router.get('/schedule', function (req, res) {
                     let i = 0;
                     while (shiftTarget.length < 3 && shiftSource.length > 0 && i < shiftSource.length) {
                         const adminNo = shiftSource[i].fields.AdminNo[0];
-                        if (!allocatedSAC.includes(adminNo)) {
+                        const name = shiftSource[i].fields['Full Name'][0];
+                        if (!allocation.includes(adminNo)) {
                             shiftTarget.push(shiftSource[i]);
                             shiftSource.splice(i, 1);
-                            allocatedSAC.push(adminNo);
+                            allocation.push(adminNo);
+                            availableSAC[adminNo] += 1;
+                            // availableSAC.push(name);
                         } else {
                             i++;
                         }
@@ -197,19 +200,37 @@ router.get('/schedule', function (req, res) {
                     }
                 }
 
-                if (shift.s1.length < shift.s2.length) {
-                    allocateShift(shift.s1, shift1)
-                    allocateShift(shift.s2, shift2)
+                let seniorShift1 = shift.s1.filter((sac) => parseInt(sac.fields.Batch[0].slice(6)) !== juniorBatch);
+                let seniorShift2 = shift.s2.filter((sac) => parseInt(sac.fields.Batch[0].slice(6)) !== juniorBatch);
+
+                const sortedShift1 = shift.s1.sort((a, b) => availableSAC[a.fields.AdminNo[0]] - availableSAC[b.fields.AdminNo[0]])
+                const sortedShift2 = shift.s2.sort((a, b) => availableSAC[a.fields.AdminNo[0]] - availableSAC[b.fields.AdminNo[0]])
+
+                // TEST LOG FOR ROUND ROBBIN SHIFT ALLOCATION
+                // console.log(`========== ${day} ==========`)
+                // console.log(`========== SHIFT 1 ==========`)
+                // sortedShift1.forEach(student => {
+                //     console.log(student.fields['Full Name'][0], student.fields.PriorityScore);
+                // });
+                // console.log(`========== SHIFT 2 ==========`)
+                // sortedShift2.forEach(student => {
+                //     console.log(student.fields['Full Name'][0], student.fields.PriorityScore);
+                // });
+
+                // Allocate shifts with the least senior first 
+                if (seniorShift1.length < seniorShift2.length) {
+                    allocateShift(sortedShift1, shift1);
+                    allocateShift(sortedShift2, shift2);
                 } else {
-                    allocateShift(shift.s2, shift2)
-                    allocateShift(shift.s1, shift1)
+                    allocateShift(sortedShift2, shift2);
+                    allocateShift(sortedShift1, shift1);
                 }
 
+                // console.log(availableSAC);
                 schedule.push(roster);
             });
-            // console.log("AFTER")
-            // console.log(schedule)
 
+            console.log(availableSAC); // Test Log
             // schedule.forEach((roster) => {
             //     console.log("========== SHIFT 1 ==========")
             //     roster.shift1.forEach((sac) => {
@@ -227,8 +248,24 @@ router.get('/schedule', function (req, res) {
             //     })
             // })
 
+            // console.log(schedule, []);
+
             const firstDayIndex = startOfMonth.getDay();
             const lastDayIndex = endOfMonth.getDay();
+
+
+            // console.log(schedule)
+
+            // students.forEach(name => console.log(name.fields['Full Name']));
+            // console.log(students)
+
+            // console.log(shiftFrequency); // TEST LOG
+
+            // const rosterFrequency = availableSAC.reduce((count, adminNo) => {
+            //     count[adminNo] = (count[adminNo] || 0) + 1;
+            //     return count;
+            // }, {});
+            // console.log(rosterFrequency);
 
             //Format shift schedule into weeks 
             for (let i = 0; i < firstDayIndex; i++) { schedule.unshift({ day: '', shift1: '', shift2: '' }); }
@@ -240,7 +277,17 @@ router.get('/schedule', function (req, res) {
             for (let i = lastDayIndex; i < 6; i++) { days.push({ day: '', shift1: '', shift2: '' }); }
             while (days.length > 0) { weeklyRemainder.push(days.splice(0, 7)); }
 
-            // console.log(weeks);
+
+
+            // const A = [{ Name: 'Nicholas', Shift: 2, Count: 2 }, { Name: 'Roy', Shift: 1, Count: 0 }, { Name: 'Adam', Shift: 2, Count: 1 }, { Name: 'De Sheng', Shift: 2, Count: 0 }, { Name: 'Daniel', Shift: 2, Count: 1 }];
+            // console.log("BEFORE");
+            // console.log(A.sort((a, b) => a.Shift - b.Shift).sort((a, b) => a.Count - b.Count));
+            // console.log("AFTER");
+            // console.log(shuffleArray(A).sort((a, b) => a.Shift - b.Shift).sort((a, b) => a.Count - b.Count));
+
+
+
+            // console.log(weeks);  
             res.render('schedule', { title, month, selectedMonth, weeklySchedule, weeklyRemainder })
         });
 });
