@@ -1,0 +1,101 @@
+<div class="submit container">
+    <form action="/submitAvailability/add" method="POST">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+
+            <h1 class="m-0">{{title}}</h1>
+            <div class="row h-100">
+                <div class="col">
+                    <select id="month" name="SAC" class="form-select">
+                        <option selected disabled>Select SAC</option>
+                        {{#each SAC}}
+                        <option value="{{this.Name}}">{{this.Name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary col">Submit</button>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Select Month
+                </button>
+                <ul class="dropdown-menu">
+                    {{#each month}}
+                    <li><a class="dropdown-item" href="/submitAvailability?month={{@index}}">{{this}}</a></li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+        <div>
+            {{#if error}}
+            <div class="alert alert-danger">{{error}}</div>
+            {{/if}}
+            {{#if success}}
+            <div class="alert alert-success">{{success}}</div>
+            {{/if}}
+        </div>
+
+        {{#if selectedMonth includeZero=true}}
+        <table class="table table-sm text-center table-bordered">
+            <thead>
+                <tr class="table-secondary">
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <form action="">
+                    {{#each weeks}}
+                    <tr class="table-light">
+                        {{#each this}}
+                        {{#ifEquals this ''}}
+                        <th></th>
+                        {{else}}
+                        <th>{{formatDate this 'D MMM'}}</th>
+                        {{/ifEquals}}
+                        {{/each}}
+                    </tr>
+                    <tr>
+                        {{#each this}}
+                        {{#ifEquals this ''}}
+                        <td></td>
+                        {{else}}
+                        <td>
+                            {{#if (isWeekend this)}}
+                            <div></div>
+                            {{else}}
+                            <div class="">
+                                <label for="S1-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
+                                    <input type="checkbox" name="shifts" id="S1-{{formatDate this 'YYYY-MM-DD'}}"
+                                        value="S1-{{formatDate this 'YYYY-MM-DD'}}">
+                                    <span class="checkbox-label">Shift 1</span>
+                                </label>
+                                <label for="S2-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
+                                    <input type="checkbox" name="shifts" id="S2-{{formatDate this 'YYYY-MM-DD'}}"
+                                        value="S2-{{formatDate this 'YYYY-MM-DD'}}">
+                                    <span class="checkbox-label">Shift 2</span>
+                                </label>
+                                {{!-- <button class="btn btn-primary mx-2 my-3">Shift 1</button>
+                                <button class="btn btn-primary mx-2 mb-2">Shift 2</button> --}}
+                            </div>
+                            {{/if}}
+                            </th>
+                            {{/ifEquals}}
+                            {{/each}}
+                    </tr>
+                    {{/each}}
+                </form>
+            </tbody>
+        </table>
+        {{else}}
+        <div>
+            <h3 class="text-danger text-center">Please select a month</h3>
+        </div>
+        {{/if}}
+    </form>
+</div>

@@ -1,9 +1,7 @@
 const express = require('express');
-const { formatDate } = require('fullcalendar');
 const router = express.Router();
 const Shift = require("../models/airtable");
 const moment = require('moment');
-// const flashMessage = require('../helpers/messenger');
 
 
 router.get('/', function (req, res,) {
@@ -291,6 +289,72 @@ router.get('/schedule', function (req, res) {
             // console.log(weeks);  
             res.render('schedule', { title, month, selectedMonth, weeklySchedule, weeklyRemainder })
         });
+});
+
+router.get('/submitAvailability', function (req, res) {
+    const title = "Submit Availability";
+    const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    let selectedMonth = parseInt(req.query.month);
+    const d = new Date(), y = d.getFullYear();
+    let startOfMonth = new Date(y, selectedMonth, 1);
+    let endOfMonth = new Date(y, selectedMonth + 1, 0);
+    const days = [];
+    const weeks = [];
+    let SAC = [];
+    const error = req.flash('error');
+    const success = req.flash('success');
+
+    if (isNaN(selectedMonth)) {
+        res.render('submitAvailability', { title, month, selectedMonth });
+    } else {
+        for (let date = new Date(startOfMonth); date <= endOfMonth; date.setDate(date.getDate() + 1)) {
+            days.push(new Date(date));
+        }
+
+        const firstDayIndex = startOfMonth.getDay();
+        const lastDayIndex = endOfMonth.getDay();
+
+        // Format dates into weeks
+        for (let i = 0; i < firstDayIndex; i++) { days.unshift(''); }
+        for (let i = lastDayIndex; i < 6; i++) { days.push(''); }
+        while (days.length > 0) { weeks.push(days.splice(0, 7)); }
+
+        Shift.getSAC()
+            .then((record) => {
+                record.forEach((student) => {
+                    const format = {
+                        Name: student.fields.Name,
+                        dminNo: student.fields.AdminNo,
+                        Batch: student.fields.Batch
+                    }
+                    SAC.push(format);
+                });
+
+                res.render('submitAvailability', { title, month, selectedMonth, weeks, SAC, error, success });
+            });
+
+
+    }
+});
+
+router.post('/submitAvailability/add', function (req, res) {
+    let shift = req.body.shifts
+    let SAC = req.body.SAC
+    console.log(shift);
+
+    console.log(SAC);
+
+    if (SAC == undefined) {
+        req.flash('error', 'Please select a SAC before submission!');
+        res.redirect('back');
+    } else if (shift == undefined) {
+        req.flash('error', 'Please select a shift before submission!');
+        res.redirect('back');
+    } else {
+        req.flash('success', `Availabilities submitted for ${SAC}`);
+        res.redirect('back');
+    }
+
 });
 
 // router.post('/schedule', function (req, res) {

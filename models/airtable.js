@@ -1,9 +1,8 @@
 var Airtable = require('airtable');
 require('dotenv').config();
 var base = new Airtable({ apiKey: process.env.PERSONAL_ACCESS_TOKEN }).base('appvLp8BIX7Rmbgaz');
-const table = base('Admin Planner')
-
-
+const table = base('Admin Planner');
+const SAC = base('SAC');
 
 const simpleRecord = (record) => {
     return {
@@ -16,9 +15,7 @@ const simpleRecord = (record) => {
 };
 
 const getRecords = async () => {
-    var counter = 0
     var availabilities = [];
-    availabilities.length = 0;
     await table
         .select({
             view: "Grid view",
@@ -26,14 +23,26 @@ const getRecords = async () => {
         }).all()
         .then((records) => {
             records.forEach((record) => {
-                // console.log(simpleRecord(record));
                 availabilities.push(record._rawJson)
-                counter++
             });
         })
-        // console.log(availabilities);
-    return availabilities
+    return availabilities;
 };
+
+const getSAC = async () => {
+    var students = [];
+    await SAC 
+    .select({
+        view: "DATABASE",
+        sort: [{field: "Batch", direction: "asc"}]
+    }).all()
+    .then((records) => {
+        records.forEach((record) => {
+            students.push(record._rawJson)
+        });
+    });
+    return students;
+}
 
 const getRecordById = async (id) => {
     try {
@@ -88,4 +97,4 @@ const deleteRecord = async (id) => {
 getRecords();
 
 
-module.exports = { getRecords, getRecordById, createRecord, updateRecord, deleteRecord, simpleRecord }
+module.exports = { getRecords, getRecordById, createRecord, updateRecord, deleteRecord, simpleRecord, getSAC }

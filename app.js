@@ -18,6 +18,17 @@ app.use(express.urlencoded({
 }));
 app.use(express.json());
 
+const session = require('express-session');
+const flash = require('connect-flash');
+
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: false
+}));
+
+app.use(flash());
+
 // Creates static folder for publicly accessible HTML, CSS and Javascript files
 app.use(express.static(path.join(__dirname, 'public')));
 

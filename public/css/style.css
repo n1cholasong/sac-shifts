@@ -7,7 +7,33 @@ body {
     width: 160px;
 }
 
+.submit select {
+    width: 350px;
+}
 .schedule .SAC,
 .availabilities .SAC {
     font-size: 0.8rem;
+}
+
+.submit .checkbox-item {
+    cursor: pointer;
+    margin: .1rem 0;
+}
+
+.submit .checkbox-item input[type="checkbox"] {
+    display: none;
+}
+
+.submit .checkbox-item input[type="checkbox"]:checked+.checkbox-label {
+    background: linear-gradient(-45deg, #614385 0%, #516395 100%);
+    border: 1px solid var(--ultramarine);
+    color: white;
+}
+
+.checkbox-label {
+    border: 1px solid #516395;
+    border-radius: 10px;
+    color: #516395;
+    display: block;
+    padding: 7px 28px;
 }
