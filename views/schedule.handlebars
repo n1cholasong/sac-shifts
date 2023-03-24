@@ -35,10 +35,10 @@
                     {{#each weeklySchedule}}
                     <tr class="table-light">
                         {{#each this}}
-                        {{#ifEquals this.date ''}}
+                        {{#ifEquals this.day ''}}
                         <th></th>
                         {{else}}
-                        <th>{{formatDate this.date 'D MMM'}}</th>
+                        <th>{{formatDate this.day 'D MMM'}}</th>
                         {{/ifEquals}}
                         {{/each}}
                     </tr>
@@ -50,8 +50,8 @@
                                 <div class="SAC">
                                     <ol>
                                         {{#each this.shift1}}
-                                        <li class="{{#isSAC this.fields.FullName}}{{/isSAC}}">
-                                            {{this.fields.FullName}}
+                                        <li class="{{#isSAC this.fields.[Full Name]}}{{/isSAC}}">
+                                            {{this.fields.[Full Name]}}
                                         </li>
                                         {{/each}}
                                     </ol>
@@ -62,8 +62,8 @@
                                 <div class="SAC">
                                     <ol>
                                         {{#each this.shift2}}
-                                        <li class="{{#isSAC this.fields.FullName}}{{/isSAC}}">
-                                            {{this.fields.FullName}}
+                                        <li class="{{#isSAC this.fields.[Full Name]}}{{/isSAC}}">
+                                            {{this.fields.[Full Name]}}
                                         </li>
                                         {{/each}}
                                     </ol>
@@ -94,10 +94,10 @@
                     {{#each weeklyRemainder}}
                     <tr class="table-light">
                         {{#each this}}
-                        {{#ifEquals this.dateString ''}}
+                        {{#ifEquals this.day ''}}
                         <th></th>
                         {{else}}
-                        <th>{{formatDate this.dateString 'D MMM'}}</th>
+                        <th>{{formatDate this.day 'D MMM'}}</th>
                         {{/ifEquals}}
                         {{/each}}
                     </tr>
@@ -105,24 +105,24 @@
                         {{#each this}}
                         <td class="py-3">
                             <div class="mb-3">
-                                <h6>Unallocated Shfit 1 ({{this.sortedShift1.length}})</h6>
+                                <h6>Unallocated Shfit 1 ({{this.s1.length}})</h6>
                                 <div class="SAC">
                                     <ol>
-                                        {{#each this.sortedShift1}}
-                                        <li class="{{#isSAC this.fields.FullName}}{{/isSAC}}">
-                                            {{this.fields.FullName}}
+                                        {{#each this.s1}}
+                                        <li class="{{#isSAC this.fields.[Full Name]}}{{/isSAC}}">
+                                            {{this.fields.[Full Name]}}
                                         </li>
                                         {{/each}}
                                     </ol>
                                 </div>
                             </div>
                             <div>
-                                <h6>Unallocated Shfit 2 ({{this.sortedShift2.length}})</h6>
+                                <h6>Unallocated Shfit 2 ({{this.s2.length}})</h6>
                                 <div class="SAC">
                                     <ol>
-                                        {{#each this.sortedShift1}}
-                                        <li class="{{#isSAC this.fields.FullName}}{{/isSAC}}">
-                                            {{this.fields.FullName}}
+                                        {{#each this.s2}}
+                                        <li class="{{#isSAC this.fields.[Full Name]}}{{/isSAC}}">
+                                            {{this.fields.[Full Name]}}
                                         </li>
                                         {{/each}}
                                     </ol>

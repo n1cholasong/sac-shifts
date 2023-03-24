@@ -1,3 +1,3 @@
-# SAC Shift Schduling System - 80%
-An automated system for the Student Assistant Coach (SAC) admin team in MakerspaceNYP
+# sac-shifts - Work in progress...
+An automated shifts allocation application for Student Assistant Coach (SAC) in MakerspaceNYP
 
