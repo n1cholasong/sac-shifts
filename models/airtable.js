@@ -55,15 +55,13 @@ const getRecordById = async (id) => {
 
 };
 
-const createRecord = async (fields) => {
+const addAvalilability = async (fields) => {
     try {
-        const createdRecord = await table.create(fields);
-        console.log(simpleRecord(createdRecord));
+        const newRecord = await table.create(fields);
     }
     catch (err) {
         console.error(err);
     }
-
 };
 
 const updateRecord = async (id, fields) => {
@@ -97,4 +95,4 @@ const deleteRecord = async (id) => {
 getRecords();
 
 
-module.exports = { getRecords, getRecordById, createRecord, updateRecord, deleteRecord, simpleRecord, getSAC }
+module.exports = { getRecords, getRecordById, addAvalilability, updateRecord, deleteRecord, simpleRecord, getSAC }

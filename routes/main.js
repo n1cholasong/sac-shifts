@@ -252,8 +252,9 @@ router.get('/submitAvailability', function (req, res) {
             .then((record) => {
                 record.forEach((student) => {
                     const format = {
+                        id: student.id,
                         Name: student.fields.Name,
-                        dminNo: student.fields.AdminNo,
+                        adminNo: student.fields.AdminNo,
                         Batch: student.fields.Batch
                     }
                     SAC.push(format);
@@ -267,20 +268,40 @@ router.get('/submitAvailability', function (req, res) {
 });
 
 router.post('/submitAvailability/add', function (req, res) {
-    let shift = req.body.shifts
-    let SAC = req.body.SAC
-    console.log(shift);
+    let shift = req.body.shifts;
+    const dataId = req.body.SAC;
+    const name = req.body.selectedSAC;
 
-    console.log(SAC);
+    console.log(dataId);
+    console.log(name);
 
-    if (SAC == undefined) {
+    if (dataId == undefined) {
         req.flash('error', 'Please select a SAC before submission!');
         res.redirect('back');
     } else if (shift == undefined) {
         req.flash('error', 'Please select a shift before submission!');
         res.redirect('back');
     } else {
-        req.flash('success', `Availabilities submitted for ${SAC}`);
+        // Convert checkboxes selection to an arry if its not one
+        if (!Array.isArray(shift)) { shift = [shift]; }
+        shift.forEach((availability) => {
+            const shiftType = availability.slice(0, 2);
+            const date = availability.slice(3);
+            let type = null;
+   
+            if (shiftType == 'S1') {
+                type = 'Term Shift 1';
+            } else if (shiftType == 'S2') {
+                type = 'Term Shift 2';
+            } else {
+                type = null;
+            }
+
+            const fields = { SAC: [dataId], Available: date, 'Shift Type': type }
+            Shift.addAvalilability(fields);
+        });
+
+        req.flash('success', `Availabilities submitted for ${name}`);
         res.redirect('back');
     }
 
