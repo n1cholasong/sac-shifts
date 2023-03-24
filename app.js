@@ -8,13 +8,13 @@ const helpers = require('./helpers/handlebars');
 const app = express()
 
 app.engine('handlebars', engine({
-	helpers: helpers,
-	defaultLayout: 'main' // Specify default template views/layout/main.handlebar 
+  helpers: helpers,
+  defaultLayout: 'main' // Specify default template views/layout/main.handlebar 
 }));
 app.set('view engine', 'handlebars');
 
 app.use(express.urlencoded({
-	extended: false
+  extended: false
 }));
 app.use(express.json());
 

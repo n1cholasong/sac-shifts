@@ -19,9 +19,9 @@ const ifMore = function (params1, params2, options) {
 }
 
 const isSAC = function (name) {
-    if (name == "No Senior available!") {
+    if (name == "No Senior Available!") {
         return "text-danger fw-bold";
-    } else if (name == "No SAC available!") {
+    } else if (name == "No SAC Available!") {
         return "text-danger fw-bold";
     } else {
         return "";
