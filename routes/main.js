@@ -272,34 +272,10 @@ router.get('/schedule', function (req, res) {
             while (schedule.length > 0) { weeklySchedule.push(schedule.splice(0, 7)); }
 
             //Format remainingshift availabilities into weeks
-            for (let i = 0; i < firstDayIndex; i++) { days.unshift({ day: '', shift1: '', shift2: '' }); }
-            for (let i = lastDayIndex; i < 6; i++) { days.push({ day: '', shift1: '', shift2: '' }); }
-            while (days.length > 0) { weeklyRemainder.push(days.splice(0, 7)); }
-<<<<<<< HEAD
+            for (let i = 0; i < firstDayIndex; i++) { shiftsByDate.unshift({ date: '', shift1: '', shift2: '' }); }
+            for (let i = lastDayIndex; i < 6; i++) { shiftsByDate.push({ date: '', shift1: '', shift2: '' }); }
+            while (shiftsByDate.length > 0) { weeklyRemainder.push(shiftsByDate.splice(0, 7)); }
 
-
-
-            // const A = [{ Name: 'Nicholas', Shift: 2, Count: 2 }, { Name: 'Roy', Shift: 1, Count: 0 }, { Name: 'Adam', Shift: 2, Count: 1 }, { Name: 'De Sheng', Shift: 2, Count: 0 }, { Name: 'Daniel', Shift: 2, Count: 1 }];
-            // console.log("BEFORE");
-            // console.log(A.sort((a, b) => a.Shift - b.Shift).sort((a, b) => a.Count - b.Count));
-            // console.log("AFTER");
-            // console.log(shuffleArray(A).sort((a, b) => a.Shift - b.Shift).sort((a, b) => a.Count - b.Count));
-
-
-
-=======
-
-
-
-            // const A = [{ Name: 'Nicholas', Shift: 2, Count: 2 }, { Name: 'Roy', Shift: 1, Count: 0 }, { Name: 'Adam', Shift: 2, Count: 1 }, { Name: 'De Sheng', Shift: 2, Count: 0 }, { Name: 'Daniel', Shift: 2, Count: 1 }];
-            // console.log("BEFORE");
-            // console.log(A.sort((a, b) => a.Shift - b.Shift).sort((a, b) => a.Count - b.Count));
-            // console.log("AFTER");
-            // console.log(shuffleArray(A).sort((a, b) => a.Shift - b.Shift).sort((a, b) => a.Count - b.Count));
-
-
-
->>>>>>> parent of 2ccd868 (refactor algorithm)
             // console.log(weeks);  
             res.render('schedule', { title, month, selectedMonth, weeklySchedule, weeklyRemainder })
         });

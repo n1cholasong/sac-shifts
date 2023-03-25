@@ -15,18 +15,18 @@ const simpleRecord = (record) => {
 };
 
 const getRecords = async () => {
-    var availabilities = [];
+    var availability = [];
     await table
         .select({
             view: "Grid view",
-            sort: [{ field: "Available", direction: "asc" }]
+            sort: [{ field: "DateAvailable", direction: "asc" }]
         }).all()
         .then((records) => {
             records.forEach((record) => {
-                availabilities.push(record._rawJson)
+                availability.push(record._rawJson)
             });
         })
-    return availabilities;
+    return availability;
 };
 
 const getSAC = async () => {

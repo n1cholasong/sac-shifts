@@ -7,13 +7,12 @@
     "express-handlebars": "^6.0.6",
     "express-session": "^1.17.3",
     "flash-messenger": "^1.1.1",
-    "fullcalendar": "^6.1.4",
     "handlebars": "^4.7.7",
     "moment": "^2.29.4"
   },
   "name": "sac-shifts",
   "version": "1.0.0",
-  "description": "an automated shift allocation web app",
+  "description": "An automated Shift Scheduling System",
   "main": "app.js",
   "scripts": {
     "test": ""
