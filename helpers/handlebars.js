@@ -30,14 +30,13 @@ const isSAC = function (name) {
 
 const isWeekend = function (date) {
     const day = new Date(date).getDay();
-    return (day == 0 || day == 6) ? true : false; 
+    return (day == 0 || day == 6) ? true : false;
 }
 
-const ifWeekend = function (params1, params2, options) {
-    if (params1 == params2) {
-        return options.fn(this);
-    }
-    return options.inverse(this);
+const shiftIndex = function (num) {
+    if (num > 3) { return 'text-success fw-bold'; }
+    if (num < 3) { return 'text-danger fw-bold'; }
+    if (num == 3) { return 'text-warning fw-bold'; }
 }
 
-module.exports = { formatDate, ifEquals, ifMore, isSAC, isWeekend }
+module.exports = { formatDate, ifEquals, ifMore, isSAC, isWeekend, shiftIndex }

@@ -32,7 +32,7 @@
             {{#each weeks}}
             <tr class="table-light">
                 {{#each this}}
-                {{#ifEquals this.date ''}}
+                {{#ifEquals this.dateString ''}}
                 <th></th>
                 {{else}}
                 <th>{{formatDate this.dateString 'D MMM'}}</th>
@@ -42,26 +42,47 @@
             <tr>
                 {{#each this}}
                 <td class="py-3">
-                    {{#if this.sortedShift1}}
-                    <div class="mb-3">
-                        <h6>Shfit 1 ({{this.sortedShift1.length}})</h6>
-                        <div class="SAC">
-                            <ol>
-                                {{#each this.sortedShift1}}
-                                <li>{{this.fields.FullName}}</li>
-                                {{/each}}
-                            </ol>
-                        </div>
-                    </div>
+                    {{#if (isWeekend this.dateString)}}
                     <div>
-                        <h6>Shfit 2 ({{this.sortedShift2.length}})</h6>
-                        <div class="SAC">
-                            <ol>
-                                {{#each this.sortedShift2}}
-                                <li>{{this.fields.FullName}}</li>
-                                {{/each}}
-                            </ol>
+                    </div>
+                    {{else}}
+                    <div>
+                        {{#if this.sortedShift1}}
+                        <div class="mb-3">
+                            <h6>
+                                Shfit 1 (<span
+                                    class="{{shiftIndex this.sortedShift1.length}}">{{this.sortedShift1.length}}</span>)
+                            </h6>
+                            <div class="SAC">
+                                <ol>
+                                    {{#each this.sortedShift1}}
+                                    <li>{{this.fields.FullName}}</li>
+                                    {{/each}}
+                                </ol>
+                            </div>
                         </div>
+                        {{/if}}
+                        {{#if this.sortedShift2}}
+                        <div>
+                             <h6>
+                                Shfit 2 (<span
+                                    class="{{shiftIndex this.sortedShift2.length}}">{{this.sortedShift2.length}}</span>)
+                            </h6>
+                            <div class="SAC">
+                                <ol>
+                                    {{#each this.sortedShift2}}
+                                    {{#ifEquals this.sortedShift2 ''}}
+                                    <div>
+                                        <h6 class="text-danger">No SAC Available!</h6>
+                                    </div>
+                                    {{else}}
+                                    <li>{{this.fields.FullName}}</li>
+                                    {{/ifEquals}}
+                                    {{/each}}
+                                </ol>
+                            </div>
+                        </div>
+                        {{/if}}
                     </div>
                     {{/if}}
                 </td>

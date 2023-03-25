@@ -45,30 +45,38 @@
                     <tr>
                         {{#each this}}
                         <td class="py-3">
-                            <div class="mb-3">
-                                <h6>Shfit 1 ({{this.shift1.length}})</h6>
-                                <div class="SAC">
-                                    <ol>
-                                        {{#each this.shift1}}
-                                        <li class="{{#isSAC this.fields.FullName}}{{/isSAC}}">
-                                            {{this.fields.FullName}}
-                                        </li>
-                                        {{/each}}
-                                    </ol>
-                                </div>
-                            </div>
+                            {{#ifEquals this.date ''}}
+                            <div></div>
+                            {{else}}
                             <div>
-                                <h6>Shfit 2 ({{this.shift2.length}})</h6>
-                                <div class="SAC">
-                                    <ol>
-                                        {{#each this.shift2}}
-                                        <li class="{{#isSAC this.fields.FullName}}{{/isSAC}}">
-                                            {{this.fields.FullName}}
-                                        </li>
-                                        {{/each}}
-                                    </ol>
+                                {{#unless (isWeekend this.date)}}
+                                <div class="mb-3">
+                                    <h6>Shfit 1</h6>
+                                    <div class="SAC">
+                                        <ol>
+                                            {{#each this.shift1}}
+                                            <li class="{{#isSAC this.fields.FullName}}{{/isSAC}}">
+                                                {{this.fields.FullName}}
+                                            </li>
+                                            {{/each}}
+                                        </ol>
+                                    </div>
                                 </div>
+                                <div>
+                                    <h6>Shfit 2</h6>
+                                    <div class="SAC">
+                                        <ol>
+                                            {{#each this.shift2}}
+                                            <li class="{{#isSAC this.fields.FullName}}{{/isSAC}}">
+                                                {{this.fields.FullName}}
+                                            </li>
+                                            {{/each}}
+                                        </ol>
+                                    </div>
+                                </div>
+                                {{/unless}}
                             </div>
+                            {{/ifEquals}}
                         </td>
                         {{/each}}
                     </tr>
