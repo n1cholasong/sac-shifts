@@ -247,7 +247,6 @@ router.get('/submitAvailability', function (req, res) {
                     const format = {
                         Id: student.id,
                         Name: student.fields.Name,
-                        AdminNo: student.fields.AdminNo,
                         Batch: student.fields.Batch
                     }
                     SAC.push(format);

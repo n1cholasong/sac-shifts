@@ -1,4 +1,4 @@
-<div class="submit container">
+<div class="submit container mb-5">
     <form action="/submitAvailability/add" method="POST" id="availabilityForm">
         <div class="d-flex justify-content-between align-items-center mb-5">
 
@@ -8,7 +8,7 @@
                     <select id="SAC" name="SAC" class="form-select">
                         <option selected disabled>Select SAC</option>
                         {{#each SAC}}
-                        <option value="{{this.id}}">{{this.Name}}</option>
+                        <option value="{{this.Id}}">{{this.Name}}</option>
                         {{/each}}
                     </select>
                     <input type="hidden" name="selectedSAC" id="selected-sac-input" />
@@ -73,13 +73,13 @@
                             {{#if (isWeekend this)}}
                             <div></div>
                             {{else}}
-                            <div class="">
-                                <label for="S1-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
+                            <div class="d-flex flex-column">
+                                <label for="S1-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item p-2">
                                     <input type="checkbox" name="shifts" id="S1-{{formatDate this 'YYYY-MM-DD'}}"
                                         value="S1-{{formatDate this 'YYYY-MM-DD'}}">
                                     <span class="checkbox-label">Shift 1</span>
                                 </label>
-                                <label for="S2-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
+                                <label for="S2-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item px-2 pb-2">
                                     <input type="checkbox" name="shifts" id="S2-{{formatDate this 'YYYY-MM-DD'}}"
                                         value="S2-{{formatDate this 'YYYY-MM-DD'}}">
                                     <span class="checkbox-label">Shift 2</span>
