@@ -32,29 +32,33 @@
             {{#each weeks}}
             <tr class="table-light">
                 {{#each this}}
-                <th>{{this.day}}</th>
+                {{#ifEquals this.date ''}}
+                <th></th>
+                {{else}}
+                <th>{{formatDate this.dateString 'D MMM'}}</th>
+                {{/ifEquals}}
                 {{/each}}
             </tr>
             <tr>
                 {{#each this}}
                 <td class="py-3">
-                    {{#if this.s1}}
+                    {{#if this.sortedShift1}}
                     <div class="mb-3">
-                        <h6>Shfit 1 ({{this.s1.length}})</h6>
+                        <h6>Shfit 1 ({{this.sortedShift1.length}})</h6>
                         <div class="SAC">
                             <ol>
-                                {{#each this.s1}}
-                                <li>{{this.fields.[Full Name]}}</li>
+                                {{#each this.sortedShift1}}
+                                <li>{{this.fields.FullName}}</li>
                                 {{/each}}
                             </ol>
                         </div>
                     </div>
                     <div>
-                        <h6>Shfit 2 ({{this.s2.length}})</h6>
+                        <h6>Shfit 2 ({{this.sortedShift2.length}})</h6>
                         <div class="SAC">
                             <ol>
-                                {{#each this.s2}}
-                                <li>{{this.fields.[Full Name]}}</li>
+                                {{#each this.sortedShift2}}
+                                <li>{{this.fields.FullName}}</li>
                                 {{/each}}
                             </ol>
                         </div>

@@ -9,9 +9,8 @@
             <tr>
                 <th>#No</th>
                 <th>Full Name</th>
-                <th>Admin No</th>
                 <th>Batch</th>
-                <th>Available</th>
+                <th>Date Available</th>
                 <th>Shift Type</th>
             </tr>
         </thead>
@@ -19,11 +18,10 @@
             {{#each SAC}}
             <tr>
                 <td>{{@index}}</td>
-                <td>{{fields.[Full Name]}}</td>
-                <td>{{fields.[Admin No]}}</td>
+                <td>{{fields.FullName}}</td>
                 <td>{{fields.Batch}}</td>
-                <td>{{fields.Available}}</td>
-                <td>{{fields.[Shift Type]}}</td>
+                <td>{{fields.DateAvailable}}</td>
+                <td>{{fields.ShiftType}}</td>
             </tr>
             {{/each}}
         </tbody>
