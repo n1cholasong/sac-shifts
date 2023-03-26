@@ -9,11 +9,6 @@ router.get('/', function (req, res,) {
     res.render('index', { title });
 })
 
-router.get('/form', function (req, res,) {
-    title = "Avalability Form";
-    res.render('form', { title });
-})
-
 router.get('/availability/listView', function (req, res,) {
     title = "SAC Availability";
     Shift.getRecords()
@@ -253,7 +248,8 @@ router.get('/submitAvailability', function (req, res) {
                 });
 
                 res.render('submitAvailability', { title, month, selectedMonth, weeks, SAC, error, success });
-            });
+            })
+            .catch(error => console.log(error));
     }
 });
 

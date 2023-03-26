@@ -1,0 +1,49 @@
+<div id="background" class="loading-wall">
+    <div class="loading-card text-center rounded-3 border border-dark">
+        <button id="close" type="button" class="btn btn-close close p-3" aria-label="Close"></button>
+        <div class="loading-body">
+
+            <div class="circle-loader"></div>
+            <div class="checkmark draw"></div>
+        </div>
+        <button id="toggle" type="button" class="btn btn-secondary mt-5">
+            <div class="d-flex justify-content-center">
+                Loading
+                <div class="spinner ms-1">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+            </div>
+        </button>
+        <button id="return" type="button" class="btn btn-success mt-5">Return</button>
+    </div>
+</div>
+
+
+<script>
+    const background = $('#background')
+    const button = $('#toggle');
+    const closeBtn = $('#close');
+    const returnBtn = $('#return');
+
+    closeBtn.hide();
+    returnBtn.hide();
+    background.hide();
+
+    button.click(function () {
+        $('.circle-loader').toggleClass('load-complete');
+        $('.checkmark').toggle();
+        button.hide();
+        closeBtn.fadeToggle("slow");
+        returnBtn.fadeToggle("slow");
+    });
+
+    function hideBackground() {
+        background.hide();
+    }
+
+    closeBtn.click(hideBackground);
+    returnBtn.click(hideBackground);
+
+</script>

@@ -31,16 +31,16 @@ const getRecords = async () => {
 
 const getSAC = async () => {
     var students = [];
-    await SAC 
-    .select({
-        view: "DATABASE",
-        sort: [{field: "Batch", direction: "asc"}]
-    }).all()
-    .then((records) => {
-        records.forEach((record) => {
-            students.push(record._rawJson)
+    await SAC
+        .select({
+            view: "DATABASE",
+            sort: [{ field: "Batch", direction: "asc" }]
+        }).all()
+        .then((records) => {
+            records.forEach((record) => {
+                students.push(record._rawJson)
+            });
         });
-    });
     return students;
 }
 
@@ -57,7 +57,8 @@ const getRecordById = async (id) => {
 
 const addAvalilability = async (fields) => {
     try {
-        const newRecord = await table.create(fields);
+        await table.create(fields);
+        console.log("Availability Submitted!")
     }
     catch (err) {
         console.error(err);

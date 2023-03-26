@@ -1,33 +1,49 @@
+<div id="background" class="loading-wall">
+    <div class="loading-card text-center rounded-3 border border-dark">
+        <div class="loading-body">
+            <div class="circle-loader"></div>
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+            <h6>Loading</h6>
+            <div class="spinner ms-1">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="submit container mb-5">
     <form action="/submitAvailability/add" method="POST" id="availabilityForm">
         <div class="d-flex justify-content-between align-items-center mb-5">
-
             <h1 class="m-0">{{title}}</h1>
-            <div class="row h-100">
-                <div class="col">
-                    <select id="SAC" name="SAC" class="form-select">
-                        <option selected disabled>Select SAC</option>
-                        {{#each SAC}}
-                        <option value="{{this.Id}}">{{this.Name}}</option>
-                        {{/each}}
-                    </select>
-                    <input type="hidden" name="selectedSAC" id="selected-sac-input" />
-                </div>
-                <button type="submit" id="submitBtn" class="btn btn-primary col">Submit</button>
-                <div id="loadingSpinner" style="display: none;">
-                    <i class="fa fa-spinner fa-spin"></i> Submitting...
-                </div>
-            </div>
             <div class="dropdown">
                 <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
                     Select Month
                 </button>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu" data-target="availability-dropdown">
                     {{#each month}}
                     <li><a class="dropdown-item" href="/submitAvailability?month={{@index}}">{{this}}</a></li>
                     {{/each}}
                 </ul>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-10 pe-0">
+                <select id="SAC" name="SAC" class="form-select">
+                    <option selected disabled>Select SAC</option>
+                    {{#each SAC}}
+                    <option value="{{this.Id}}">{{this.Name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="col">
+                <button type="submit" id="submitBtn" class="w-100 btn btn-primary">Submit</button>
+            </div>
+            <input type="hidden" name="selectedSAC" id="selected-sac-input" />
+            <div id="spinner" class="mt-1" style="display: none;">
+                <i class="fa fa-spinner fa-spin"></i> Submitting...
             </div>
         </div>
         <div>
@@ -40,7 +56,7 @@
         </div>
 
         {{#if selectedMonth includeZero=true}}
-        <table class="table table-sm text-center table-bordered">
+        <table id="calendar" class="table table-sm text-center table-bordered">
             <thead>
                 <tr class="table-secondary">
                     <th>Sun</th>
@@ -53,7 +69,7 @@
                 </tr>
             </thead>
             <tbody>
-                <form action="">
+                <div>
                     {{#each weeks}}
                     <tr class="table-light">
                         {{#each this}}
@@ -91,7 +107,7 @@
                             {{/each}}
                     </tr>
                     {{/each}}
-                </form>
+                </div>
             </tbody>
         </table>
         {{else}}
@@ -101,24 +117,3 @@
         {{/if}}
     </form>
 </div>
-
-<script>
-    $(document).ready(function () {
-        const submitButton = $('#submitBtn');
-        const loadingSpinner = $('#loadingSpinner');
-
-        $('#SAC').change(function () {
-            let selectedSAC = $(this).find('option:selected').text(); // Get the selected option value
-            $('#selected-sac-input').val(selectedSAC); // Set the hidden input value
-            console.log(selectedSAC);
-        });
-
-        $('#availabilityForm').submit(function (event) {
-            console.log('Test');
-            // Disable the submit button
-            submitButton.prop('disabled', true);
-            // Display the loading spinner
-            loadingSpinner.show();
-        });
-    });
-</script>
