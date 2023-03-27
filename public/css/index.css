@@ -1,0 +1,13 @@
+.home {
+   min-height: 100%;
+}
+
+.home .card {
+    /* border: 1px solid black; */
+    border-radius: 3rem;
+    background-color: rgb(232, 219, 255, 0.8);
+}
+
+.home .card .img-box>img {
+    width: 400px;
+}
