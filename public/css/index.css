@@ -1,13 +1,37 @@
 .home {
-   min-height: 100%;
+    /* background-color: blue; */
+    height: 100%;
+    padding: 0;
 }
 
 .home .card {
-    /* border: 1px solid black; */
-    border-radius: 3rem;
-    background-color: rgb(232, 219, 255, 0.8);
+    width: 75%;
+    height: 80vh;
 }
 
 .home .card .img-box>img {
-    width: 400px;
+    width: 350px;
 }
+
+
+
+.home .card .title h1 {
+    font-size: 4rem;
+    /* color: #426696; */
+    font-weight: 600;
+
+
+    .home .card .title h3 {
+        font-size: 2.25rem;
+        /* color: #658EC6; */
+        font-weight: 500;
+        opacity: 0.8;
+    }
+
+
+
+    main,
+    .home,
+    .card {
+        /* border: 5px solid black; */
+    }
