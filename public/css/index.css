@@ -5,7 +5,7 @@
 }
 
 .home .card {
-    width: 75%;
+    width: 80%;
     height: 80vh;
 }
 
@@ -19,19 +19,18 @@
     font-size: 4rem;
     /* color: #426696; */
     font-weight: 600;
+}
+
+.home .card .title h3 {
+    font-size: 2.25rem;
+    /* color: #658EC6; */
+    font-weight: 500;
+}
 
 
-    .home .card .title h3 {
-        font-size: 2.25rem;
-        /* color: #658EC6; */
-        font-weight: 500;
-        opacity: 0.8;
-    }
 
-
-
-    main,
-    .home,
-    .card {
-        /* border: 5px solid black; */
-    }
+main,
+.home,
+.card {
+    /* border: 5px solid black; */
+}

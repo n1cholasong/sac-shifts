@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/dataTables.bootstrap5.min.css">
 
-<div class="availabilities container">
+<div class="availabilities container card glass p-4 my-5">
     <h1>{{title}} (List)</h1>
 
     <table id="availabilities" class="table table-striped">
@@ -34,6 +34,6 @@
 <script src="https://cdn.datatables.net/1.13.3/js/dataTables.bootstrap5.min.js"></script>
 <script>
     $(document).ready(function () {
-    $('#availabilities').DataTable();
-});
+        $('#availabilities').DataTable();
+    });
 </script>

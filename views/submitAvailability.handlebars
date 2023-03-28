@@ -1,4 +1,4 @@
-<div class="submit container card glass p-4 my-5 mb-5">
+<div class="submit container card glass p-4 my-5">
     <form action="/submitAvailability/add" method="POST" id="availabilityForm">
         <div class="d-flex justify-content-between align-items-center mb-5">
             <h1 class="m-0">{{title}}</h1>
@@ -43,7 +43,7 @@
         {{#if selectedMonth includeZero=true}}
         <table id="calendar" class="table table-sm text-center table-bordered">
             <thead>
-                <tr class="table-secondary">
+                <tr class="table-secondary table-top">
                     <th>Sun</th>
                     <th>Mon</th>
                     <th>Tue</th>
