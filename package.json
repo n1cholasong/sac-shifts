@@ -15,7 +15,7 @@
   "description": "An automated Shift Scheduling System",
   "main": "app.js",
   "scripts": {
-    "test": ""
+    "start": ""
   },
   "author": "n1cholasong",
   "license": "ISC"

@@ -13,8 +13,6 @@
     width: 350px;
 }
 
-
-
 .home .card .title h1 {
     font-size: 4rem;
     /* color: #426696; */
@@ -24,10 +22,7 @@
 .home .card .title h3 {
     font-size: 2.25rem;
     /* color: #658EC6; */
-    font-weight: 500;
 }
-
-
 
 main,
 .home,

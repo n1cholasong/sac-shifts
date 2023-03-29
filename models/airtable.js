@@ -18,7 +18,7 @@ const getRecords = async () => {
     var availability = [];
     await table
         .select({
-            view: "Grid view",
+            view: "Main View (DO NOT DELETE)",
             sort: [{ field: "DateAvailable", direction: "asc" }]
         }).all()
         .then((records) => {
@@ -33,7 +33,7 @@ const getSAC = async () => {
     var students = [];
     await SAC
         .select({
-            view: "DATABASE",
+            view: "SAC (DO NOT DELETE)",
             sort: [{ field: "Batch", direction: "asc" }]
         }).all()
         .then((records) => {
