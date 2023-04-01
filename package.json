@@ -1,4 +1,11 @@
 {
+  "name": "sac-shifts",
+  "version": "1.0.0",
+  "description": "An automated Shift Scheduling System",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
   "dependencies": {
     "airtable": "^0.11.4",
     "connect-flash": "^0.1.1",
@@ -10,12 +17,8 @@
     "handlebars": "^4.7.7",
     "moment": "^2.29.4"
   },
-  "name": "sac-shifts",
-  "version": "1.0.0",
-  "description": "An automated Shift Scheduling System",
-  "main": "app.js",
-  "scripts": {
-    "start": ""
+  "engines": {
+    "node": "14.x"
   },
   "author": "n1cholasong",
   "license": "ISC"
