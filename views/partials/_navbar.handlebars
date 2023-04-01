@@ -10,23 +10,17 @@
 		</button>
 		<div class="collapse navbar-collapse justify-content-end" id="navbarNav">
 			<ul class="navbar-nav">
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle {{#ifEquals title "SAC Availability"}} active {{/ifEquals}}" href="#" role="button" data-bs-toggle="dropdown"
-						aria-expanded="false">
-						Availability
-					</a>
-					<ul class="dropdown-menu">
-						<li><a class="dropdown-item" href="/availability/listView">List View</a></li>
-						<li><a class="dropdown-item" href="/availability/calendarView">Calendar View</a></li>
-					</ul>
-				</li>
 				<li class="nav-item">
-					<a class="nav-link {{#ifEquals title "SAC Schedule"}} active {{/ifEquals}}"
-						href="/schedule">Schedule</a>
+					<a class="nav-link {{#ifEquals title "SAC Availability"}} active {{/ifEquals}}"
+						href="/availability">SAC Availability</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link {{#ifEquals title "Submit Availability"}} active {{/ifEquals}}"
 						href="/submitAvailability">Submit Availability</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link {{#ifEquals title "SAC Schedule"}} active {{/ifEquals}}"
+						href="/schedule">Schedule</a>
 				</li>
 			</ul>
 		</div>

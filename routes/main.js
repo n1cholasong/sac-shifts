@@ -14,17 +14,17 @@ router.get('/test', function (req, res,) {
     res.render('test', { title });
 })
 
-
-router.get('/availability/listView', function (req, res,) {
+// Not in use
+router.get('/availabilityList', function (req, res,) {
     title = "SAC Availability";
     Shift.getRecords()
         .then((SAC) => {
-            res.render('availability/listView', { title, SAC });
+            res.render('availabilityList', { title, SAC });
         })
         .catch(error => console.error(error));
 })
 
-router.get('/availability/calendarView', function (req, res,) {
+router.get('/availability', function (req, res,) {
     const title = "SAC Availability";
     const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const dateConfig = new Date(), year = dateConfig.getFullYear();
@@ -37,7 +37,7 @@ router.get('/availability/calendarView', function (req, res,) {
     const weeks = [];
 
     if (isNaN(selectedMonth)) {
-        res.render('availability/calendarView', { title, month, selectedMonth })
+        res.render('availability', { title, month, selectedMonth })
     } else {
         Shift.getRecords()
             .then((result) => {
@@ -67,7 +67,7 @@ router.get('/availability/calendarView', function (req, res,) {
                 for (let i = lastDayIndex; i < 6; i++) { shiftsByDate.push({ dateString: '', sortedShift1: '', sortedShift2: '' }); }
                 while (shiftsByDate.length > 0) { weeks.push(shiftsByDate.splice(0, 7)); }
 
-                res.render('availability/calendarView', { title, month, selectedMonth, weeks })
+                res.render('availability', { title, month, selectedMonth, weeks })
             })
             .catch(error => console.error(error));
     }
