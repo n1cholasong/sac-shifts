@@ -1,0 +1,23 @@
+.navbar {
+    height: 74px;
+}
+
+.navbar-brand {
+    color: #135194;
+}
+
+.navbar-brand:hover {
+    color: #135194;
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: #135194;
+}
+
+.navbar-nav .nav-item .nav-link:hover {
+    color: #358ff1;
+}
+
+.navbar-nav .nav-item .nav-link.active {
+    color: #358ff1;
+}

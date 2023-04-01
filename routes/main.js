@@ -9,12 +9,19 @@ router.get('/', function (req, res,) {
     res.render('index', { title });
 })
 
+router.get('/test', function (req, res,) {
+    title = "Test Env";
+    res.render('test', { title });
+})
+
+
 router.get('/availability/listView', function (req, res,) {
     title = "SAC Availability";
     Shift.getRecords()
         .then((SAC) => {
             res.render('availability/listView', { title, SAC });
-        });
+        })
+        .catch(error => console.error(error));
 })
 
 router.get('/availability/calendarView', function (req, res,) {
@@ -61,7 +68,8 @@ router.get('/availability/calendarView', function (req, res,) {
                 while (shiftsByDate.length > 0) { weeks.push(shiftsByDate.splice(0, 7)); }
 
                 res.render('availability/calendarView', { title, month, selectedMonth, weeks })
-            });
+            })
+            .catch(error => console.error(error));
     }
 });
 
@@ -86,7 +94,6 @@ router.get('/schedule', function (req, res) {
     if (isNaN(selectedMonth)) {
         res.render('schedule', { title, month, selectedMonth });
     }
-
     Shift.getRecords()
         .then((result) => {
             result.forEach((record) => {
@@ -202,7 +209,8 @@ router.get('/schedule', function (req, res) {
             while (shiftsByDate.length > 0) { weeklyRemainder.push(shiftsByDate.splice(0, 7)); }
 
             res.render('schedule', { title, month, selectedMonth, weeklySchedule, weeklyRemainder })
-        });
+        })
+        .catch(error => console.error(error));
 });
 
 router.get('/submitAvailability', function (req, res) {
@@ -211,6 +219,12 @@ router.get('/submitAvailability', function (req, res) {
     const dateConfig = new Date(), year = dateConfig.getFullYear();
 
     let selectedMonth = parseInt(req.query.month);
+
+    //TODO: Add if 0 year + 1
+    if (selectedMonth == 0) {
+        console.log(year);
+    }
+
     let startOfMonth = new Date(year, selectedMonth, 1);
     let endOfMonth = new Date(year, selectedMonth + 1, 0);
 
@@ -241,8 +255,9 @@ router.get('/submitAvailability', function (req, res) {
                 record.forEach((student) => {
                     const format = {
                         Id: student.id,
-                        Name: student.fields.Name,
-                        Batch: student.fields.Batch
+                        FullName: student.fields.FullName,
+                        Batch: student.fields.Batch,
+                        SAC: `${student.fields.Batch} | ${student.fields.FullName}`
                     }
                     SAC.push(format);
                 });

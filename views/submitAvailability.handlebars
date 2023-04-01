@@ -1,9 +1,9 @@
-<div class="submit container card glass p-4 my-5">
-    <form action="/submitAvailability/add" method="POST" id="availabilityForm">
-        <div class="d-flex justify-content-between align-items-center mb-5">
-            <h1 class="m-0">{{title}}</h1>
-            <div class="dropdown">
-                <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown"
+<form action="/submitAvailability/add" method="POST" id="availabilityForm" class="h-100 d-flex flex-column">
+    <div class="container card glass p-4 my-3">
+        <div class="d-flex justify-content-between align-items-center row mb-3">
+            <h1 class="m-0 col-10">{{title}}</h1>
+            <div class="dropdown col">
+                <button class="btn btn-warning dropdown-toggle w-100" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
                     Select Month
                 </button>
@@ -14,12 +14,12 @@
                 </ul>
             </div>
         </div>
-        <div class="row mb-4">
+        <div class="row">
             <div class="col-10 pe-0">
                 <select id="SAC" name="SAC" class="form-select">
                     <option selected disabled>Select SAC</option>
                     {{#each SAC}}
-                    <option value="{{this.Id}}">{{this.Name}}</option>
+                    <option value="{{this.Id}}">{{this.SAC}}</option>
                     {{/each}}
                 </select>
             </div>
@@ -31,17 +31,19 @@
                 <i class="fa fa-spinner fa-spin"></i> Submitting...
             </div>
         </div>
-        <div>
-            {{#if error}}
-            <div class="alert alert-danger">{{error}}</div>
-            {{/if}}
-            {{#if success}}
-            <div class="alert alert-success">{{success}}</div>
-            {{/if}}
-        </div>
+    </div>
+    <div class="container">
+        {{#if error}}
+        <div class="alert alert-danger">{{error}}</div>
+        {{/if}}
+        {{#if success}}
+        <div class="alert alert-success">{{success}}</div>
+        {{/if}}
+    </div>
 
-        {{#if selectedMonth includeZero=true}}
-        <table id="calendar" class="table table-sm text-center table-bordered">
+    {{#if selectedMonth includeZero=true}}
+    <div class="submit container">
+        <table id="calendar" class="table table-sm text-center table-bordered my-3">
             <thead>
                 <tr class="table-secondary table-top">
                     <th>Sun</th>
@@ -95,13 +97,14 @@
                 </div>
             </tbody>
         </table>
-        {{else}}
-        <div>
-            <h3 class="text-danger text-center">Please select a month</h3>
-        </div>
-        {{/if}}
-    </form>
-</div>
+    </div>
+    {{else}}
+    <div class="empty container">
+        <h3 class="text-danger text-center mt-4">Please select a month</h3>
+    </div>
+    {{/if}}
+</form>
+
 
 <div id="background" class="loading-wall">
     <div class="loading-card text-center rounded-3 border border-dark">

@@ -1,16 +1,16 @@
-<div class="availabilities container card glass p-4 my-5">
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <h1 class="m-0">{{title}} (Calendar)</h1>
-        <form method="GET" class="row h-100 me-1">
-            <div class="col">
-                <select id="month" name="month" class="form-select">
+<div class="availabilities container card glass p-4 my-3 mb-5">
+    <div class="d-flex justify-content-between align-items-center row">
+        <h1 class="m-0 col-6">{{title}} (Calendar)</h1>
+        <form method="GET" class="col h-100 me-1 d-flex flex-row justify-content-end">
+            <div class="d-flex align-items-center ">
+                <select id="month" name="month" class="form-select me-3">
                     <option selected disabled>Select Month</option>
                     {{#each month}}
                     <option value="{{@index}}">{{this}}</option>
                     {{/each}}
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary col">Get Record</button>
+            <button type="submit" class="btn btn-primary">Get Record</button>
         </form>
     </div>
 </div>
@@ -64,7 +64,7 @@
                         {{/if}}
                         {{#if this.sortedShift2}}
                         <div>
-                             <h6>
+                            <h6>
                                 Shfit 2 (<span
                                     class="{{shiftIndex this.sortedShift2.length}}">{{this.sortedShift2.length}}</span>)
                             </h6>

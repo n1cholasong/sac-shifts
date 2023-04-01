@@ -1,7 +1,7 @@
-<div class="schedule container card glass p-4 my-5">
-    <div class="d-flex justify-content-between align-items-center mb-5">
+<div class="schedule container card glass p-4 my-3">
+    <div class="d-flex justify-content-between align-items-center">
         <h1 class="m-0">{{title}}</h1>
-        <form method="GET" class="row h-100 me-1">
+        <form method="GET" class="row me-1">
             <div class="col">
                 <select id="month" name="month" class="form-select">
                     <option selected disabled>Select Month</option>
@@ -146,7 +146,7 @@
     </div>
 </div>
 {{else}}
-<div>
-    <h3 class="text-danger text-center">Please select a month</h3>
+<div class="empty container">
+    <h3 class="text-danger text-center mt-4">Please select a month</h3>
 </div>
 {{/if}}
