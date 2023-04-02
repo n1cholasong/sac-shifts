@@ -2,7 +2,7 @@ const moment = require('moment');
 
 const formatDate = function (date, targetFormat) {
     return moment(date).format(targetFormat);
-};
+}
 
 const ifEquals = function (params1, params2, options) {
     if (params1 == params2) {
@@ -39,4 +39,8 @@ const shiftIndex = function (num) {
     if (num == 3) { return 'text-warning fw-bold'; }
 }
 
-module.exports = { formatDate, ifEquals, ifMore, isSAC, isWeekend, shiftIndex }
+const getBatchNo = function (string) {
+    return string.slice(6);
+}
+
+module.exports = { formatDate, ifEquals, ifMore, isSAC, isWeekend, shiftIndex, getBatchNo }

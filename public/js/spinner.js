@@ -1,6 +1,6 @@
 const submitButton = $('#submitBtn');
 const spinner = $('#spinner');
-const dropdown = $('[data-target="availability-dropdown"]');
+const dropdown = $('[data-target="month-dropdown"]');
 
 const background = $('#background');
 
@@ -22,11 +22,6 @@ $(document).ready(function () {
     dropdown.on('click', function () {
         spinner.show();
         background.show();
-        $.get('/submitAvailability', function (data) {
-            //Handle response data here
-            console.log(data);
-        })
-
     });
 
     background.hide();

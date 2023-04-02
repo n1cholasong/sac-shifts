@@ -1,3 +1,4 @@
+{{> _loading}}
 <form action="/submitAvailability/add" method="POST" id="availabilityForm" class="h-100 d-flex flex-column">
     <div class="container card glass p-4 my-3">
         <div class="d-flex justify-content-between align-items-center row mb-3">
@@ -7,7 +8,7 @@
                     aria-expanded="false">
                     Select Month
                 </button>
-                <ul class="dropdown-menu" data-target="availability-dropdown">
+                <ul class="dropdown-menu" data-target="month-dropdown">
                     {{#each month}}
                     <li><a class="dropdown-item" href="/submitAvailability?month={{@index}}">{{this}}</a></li>
                     {{/each}}
@@ -43,7 +44,10 @@
 
     {{#if selectedMonth includeZero=true}}
     <div class="submit container">
-        <table id="calendar" class="table table-sm text-center table-bordered my-3">
+        <div class="text-center my-3">
+            <h2>Availability for {{formatDate startOfMonth 'MMMM YYYY'}}</h2>
+        </div>
+        <table id="calendar" class="table table-sm text-center table-bordered calendar">
             <thead>
                 <tr class="table-secondary table-top">
                     <th>Sun</th>
@@ -89,9 +93,9 @@
                                 </label>
                             </div>
                             {{/if}}
-                            </th>
-                            {{/ifEquals}}
-                            {{/each}}
+                        </td>
+                        {{/ifEquals}}
+                        {{/each}}
                     </tr>
                     {{/each}}
                 </div>
@@ -104,20 +108,3 @@
     </div>
     {{/if}}
 </form>
-
-
-<div id="background" class="loading-wall">
-    <div class="loading-card text-center rounded-3 border border-dark">
-        <div class="loading-body">
-            <div class="circle-loader"></div>
-        </div>
-        <div class="d-flex justify-content-center mt-2">
-            <h6>Loading</h6>
-            <div class="spinner ms-1">
-                <div class="bounce1"></div>
-                <div class="bounce2"></div>
-                <div class="bounce3"></div>
-            </div>
-        </div>
-    </div>
-</div>

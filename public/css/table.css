@@ -1,4 +1,4 @@
-table {
+table.calendar {
     /* border-collapse:separate; */
     border-radius: 2rem;
     overflow: hidden;
@@ -8,11 +8,6 @@ tr td {
     background-color: white !important;
 
 }
-
-/* img {
-    display: block;
-    max-width: 100%;
-} */
 
 .schedule select,
 .availabilities select {
@@ -45,4 +40,29 @@ tr td {
     color: #516395;
     display: block;
     padding: 7px 28px;
+}
+
+.schedule h6 {
+    border-radius: 30px;
+    background: linear-gradient(to right bottom, rgb(229, 233, 229, 0.3), rgba(231, 218, 255, 0.7)) !important;
+    padding: 0.1em;
+}
+
+.calendar ol {
+    padding: 0;
+    list-style-position: outside;
+    display: inline-block;   
+}
+
+.calendar ol li {
+    padding: 0 1rem;
+}
+
+div.container {
+    padding: 0;
+}
+
+.calendar .btn-main {
+    font-size: 0.8rem;
+    padding: 0.3rem 1.5rem;
 }

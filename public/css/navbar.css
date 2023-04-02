@@ -21,3 +21,10 @@
 .navbar-nav .nav-item .nav-link.active {
     color: #358ff1;
 }
+
+.add-shadow {
+    background-color: rgba(200, 216, 250, 0.9);
+    box-shadow: 0 5px 5px rgba(145, 174, 232, 0.3);
+    z-index: 999;
+    transition: box-shadow 0.4s ease, background-color 0.2s ease;
+}

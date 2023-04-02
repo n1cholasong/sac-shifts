@@ -1,22 +1,26 @@
-<div class="availabilities container card glass p-4 my-3 mb-5">
+{{> _loading}}
+<div class="availabilities container card glass p-4 my-3">
     <div class="d-flex justify-content-between align-items-center row">
-        <h1 class="m-0 col-6">{{title}} (Calendar)</h1>
-        <form method="GET" class="col h-100 me-1 d-flex flex-row justify-content-end">
-            <div class="d-flex align-items-center ">
-                <select id="month" name="month" class="form-select me-3">
-                    <option selected disabled>Select Month</option>
-                    {{#each month}}
-                    <option value="{{@index}}">{{this}}</option>
-                    {{/each}}
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Get Record</button>
-        </form>
+        <h1 class="m-0 col-10">{{title}}</h1>
+        <div class="dropdown col">
+            <button class="btn btn-warning dropdown-toggle w-100" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Select Month
+            </button>
+            <ul class="dropdown-menu" data-target="month-dropdown">
+                {{#each month}}
+                <li><a class="dropdown-item" href="/availability?month={{@index}}">{{this}}</a></li>
+                {{/each}}
+            </ul>
+        </div>
     </div>
 </div>
 {{#if selectedMonth includeZero=true}}
-<div class="availabilities container-fluid">
-    <table class="table table-sm text-center table-bordered">
+<div class="availabilities container">
+    <div class="text-center my-3">
+        <h2>{{formatDate startOfMonth 'MMMM YYYY'}} Availabilities</h2>
+    </div>
+    <table class="table table-sm text-center table-bordered my-3 calendar">
         <thead>
             <tr class="table-secondary">
                 <th>Sun</th>
@@ -41,7 +45,7 @@
             </tr>
             <tr>
                 {{#each this}}
-                <td class="py-3">
+                <td class="pt-3">
                     {{#if (isWeekend this.dateString)}}
                     <div>
                     </div>
@@ -56,7 +60,7 @@
                             <div class="SAC">
                                 <ol>
                                     {{#each this.sortedShift1}}
-                                    <li>{{this.fields.FullName}}</li>
+                                    <li>{{this.fields.Name}}</li>
                                     {{/each}}
                                 </ol>
                             </div>
@@ -76,7 +80,7 @@
                                         <h6 class="text-danger">No SAC Available!</h6>
                                     </div>
                                     {{else}}
-                                    <li>{{this.fields.FullName}}</li>
+                                    <li>{{this.fields.Name}}</li>
                                     {{/ifEquals}}
                                     {{/each}}
                                 </ol>
@@ -93,7 +97,7 @@
     </table>
 </div>
 {{else}}
-<div>
-    <h3 class="text-danger text-center">Please select a month</h3>
+<div class="empty container">
+    <h3 class="text-danger text-center mt-4">Please select a month</h3>
 </div>
 {{/if}}

@@ -1,149 +1,220 @@
+{{> _loading}}
 <div class="schedule container card glass p-4 my-3">
-    <div class="d-flex justify-content-between align-items-center">
-        <h1 class="m-0">{{title}}</h1>
-        <form method="GET" class="row me-1">
-            <div class="col">
-                <select id="month" name="month" class="form-select">
-                    <option selected disabled>Select Month</option>
-                    {{#each month}}
-                    <option value="{{@index}}">{{this}}</option>
-                    {{/each}}
-                </select>
+    <div class="d-flex justify-content-between align-items-center row">
+        <h1 class="m-0 col-8">{{title}}</h1>
+        <div class="col-2 pe-0">
+            {{#if selectedMonth includeZero=true}}
+            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#stats">
+                Allocation Stats
+            </button>
+            {{/if}}
+
+            <!-- Modal -->
+            <div class="modal fade" id="stats" tabindex="-1" aria-labelledby="statsLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="statsLabel">
+                                Allocation Statistics
+                            </h1>
+                            <button type="button" class="btn btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <table class="table table-sm ">
+                                <tr>
+                                    <th class="w-50">SAC</th>
+                                    <th>No. of shift allocated</th>
+                                </tr>
+                                {{#each sortedSacShiftFrequency}}
+                                <tr>
+                                    <td>{{@key}} </td>
+                                    <td>{{this}}</td>
+                                </tr>
+                                {{/each}}
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <p class="SAC">
+                                Note: The algorithm is not perfect, but it is a close representation of
+                                allocating shifts equally to everyone based on their availabilities. However it does not
+                                take into account for
+                                whoever is allocated on the previous day, so you may be allocated 2 or more days in a
+                                row.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary col">Get Schedule</button>
-        </form>
+        </div>
+        <div class="dropdown col-2">
+            <button class="btn btn-warning dropdown-toggle w-100" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Select Month
+            </button>
+            <ul class="dropdown-menu" data-target="month-dropdown">
+                {{#each month}}
+                <li><a class="dropdown-item" href="/schedule?month={{@index}}">{{this}}</a></li>
+                {{/each}}
+            </ul>
+        </div>
     </div>
 </div>
 {{#if selectedMonth includeZero=true}}
-<div class="schedule container-fluid">
-    <div class="row">
-        <div class="col w-50">
-            <h3 class="text-center">Makerspace Duty Roster</h3>
-            <table class="table table-sm text-center table-bordered">
-                <thead>
-                    <tr class="table-secondary">
-                        <th>Sun</th>
-                        <th>Mon</th>
-                        <th>Tue</th>
-                        <th>Wed</th>
-                        <th>Thu</th>
-                        <th>Fri</th>
-                        <th>Sat</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each weeklySchedule}}
-                    <tr class="table-light">
-                        {{#each this}}
-                        {{#ifEquals this.date ''}}
-                        <th></th>
-                        {{else}}
-                        <th>{{formatDate this.date 'D MMM'}}</th>
-                        {{/ifEquals}}
-                        {{/each}}
-                    </tr>
-                    <tr>
-                        {{#each this}}
-                        <td class="py-3">
-                            {{#ifEquals this.date ''}}
-                            <div></div>
-                            {{else}}
-                            <div>
-                                {{#unless (isWeekend this.date)}}
-                                <div class="mb-3">
-                                    <h6>Shift 1</h6>
-                                    <div class="SAC">
-                                        <ol>
-                                            {{#each this.shift1}}
-                                            <li class="{{#isSAC this.fields.FullName}}{{/isSAC}}">
-                                                {{this.fields.FullName}}
-                                            </li>
-                                            {{/each}}
-                                        </ol>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h6>Shift 2</h6>
-                                    <div class="SAC">
-                                        <ol>
-                                            {{#each this.shift2}}
-                                            <li class="{{#isSAC this.fields.FullName}}{{/isSAC}}">
-                                                {{this.fields.FullName}}
-                                            </li>
-                                            {{/each}}
-                                        </ol>
-                                    </div>
-                                </div>
-                                {{/unless}}
-                            </div>
-                            {{/ifEquals}}
-                        </td>
-                        {{/each}}
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
-        <div class="col w-50">
-            <h3 class="text-center">Unallocated Shifts</h3>
-            <table class="table table-sm text-center table-bordered">
-                <thead>
-                    <tr class="table-secondary">
-                        <th>Sun</th>
-                        <th>Mon</th>
-                        <th>Tue</th>
-                        <th>Wed</th>
-                        <th>Thu</th>
-                        <th>Fri</th>
-                        <th>Sat</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each weeklyRemainder}}
-                    <tr class="table-light">
-                        {{#each this}}
-                        {{#ifEquals this.dateString ''}}
-                        <th></th>
-                        {{else}}
-                        <th>{{formatDate this.dateString 'D MMM'}}</th>
-                        {{/ifEquals}}
-                        {{/each}}
-                    </tr>
-                    <tr>
-                        {{#each this}}
-                        <td class="py-3">
-                            <div class="mb-3">
-                                <h6>Unallocated Shfit 1 ({{this.sortedShift1.length}})</h6>
-                                <div class="SAC">
-                                    <ol>
-                                        {{#each this.sortedShift1}}
-                                        <li class="{{#isSAC this.fields.FullName}}{{/isSAC}}">
-                                            {{this.fields.FullName}}
-                                        </li>
-                                        {{/each}}
-                                    </ol>
-                                </div>
-                            </div>
-                            <div>
-                                <h6>Unallocated Shfit 2 ({{this.sortedShift2.length}})</h6>
-                                <div class="SAC">
-                                    <ol>
-                                        {{#each this.sortedShift1}}
-                                        <li class="{{#isSAC this.fields.FullName}}{{/isSAC}}">
-                                            {{this.fields.FullName}}
-                                        </li>
-                                        {{/each}}
-                                    </ol>
-                                </div>
-                            </div>
-                        </td>
-                        {{/each}}
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
+<div class="schedule container">
+    <div class="text-center my-3">
+        <h2>Makerspace Duty Roster</h2>
+        <h3>{{formatDate startOfMonth 'MMMM YYYY'}}</h3>
     </div>
+    <table class="table table-sm text-center table-bordered calendar">
+        <thead>
+            <tr class="table-secondary">
+                <th>Sun</th>
+                <th>Mon</th>
+                <th>Tue</th>
+                <th>Wed</th>
+                <th>Thu</th>
+                <th>Fri</th>
+                <th>Sat</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each weeklySchedule}}
+            <tr class="table-light">
+                {{#each this}}
+                {{#ifEquals this.date ''}}
+                <th></th>
+                {{else}}
+                <th>{{formatDate this.date 'D MMM'}}</th>
+                {{/ifEquals}}
+                {{/each}}
+            </tr>
+            <tr>
+                {{#each this}}
+                <td class="p-3">
+                    {{#ifEquals this.date ''}}
+                    <div></div>
+                    {{else}}
+                    <div>
+                        {{#unless (isWeekend this.date)}}
+                        <div>
+                            <h6>Shift 1</h6>
+                            <div class="SAC">
+                                <ol>
+                                    {{#each this.shift1}}
+                                    <li class="{{#isSAC this.fields.Name}}{{/isSAC}}">
+                                        {{this.fields.Name}}
+                                    </li>
+                                    {{/each}}
+                                </ol>
+                            </div>
+                        </div>
+                        <div>
+                            <h6>Shift 2</h6>
+                            <div class="SAC">
+                                <ol>
+                                    {{#each this.shift2}}
+                                    <li class="{{#isSAC this.fields.Name}}{{/isSAC}}">
+                                        {{this.fields.Name}}
+                                    </li>
+                                    {{/each}}
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-main" data-bs-toggle="modal"
+                            data-bs-target="#D-{{formatDate this.date 'YYYYMMDD'}}">
+                            View Shift
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="D-{{formatDate this.date 'YYYYMMDD'}}" tabindex="-1"
+                            aria-labelledby="D-{{formatDate this.date 'YYYYMMDD'}}Label" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="D-{{formatDate this.date 'YYYYMMDD'}}Label">
+                                            {{formatDate this.date 'DD MMM YYYY, dddd'}}
+                                        </h1>
+                                        <button type="button" class="btn btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h5>Shift 1</h5>
+                                                <div>
+                                                    <h6>Allocated</h6>
+                                                    <ol class="SAC">
+                                                        {{#each this.shift1}}
+                                                        <li class="{{#isSAC this.fields.Name}}{{/isSAC}}">
+                                                            {{this.fields.Name}}
+                                                        </li>
+                                                        {{/each}}
+                                                    </ol>
+                                                </div>
+                                                <div>
+                                                    <h6>Available</h6>
+                                                    {{#if this.availableShift1}}
+                                                    <ol class="SAC">
+                                                        {{#each this.availableShift1}}
+                                                        <li class="{{#isSAC this.fields.Name}}{{/isSAC}}">
+                                                            {{this.fields.Name}}
+                                                        </li>
+                                                        {{/each}}
+                                                    </ol>
+                                                    {{else}}
+                                                    <div>
+                                                        No other SAC available.
+                                                    </div>
+                                                    {{/if}}
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <h5>Shift 2</h5>
+                                                <div>
+                                                    <h6>Allocated</h6>
+                                                    <ol class="SAC">
+                                                        {{#each this.shift2}}
+                                                        <li class="{{#isSAC this.fields.Name}}{{/isSAC}}">
+                                                            {{this.fields.Name}}
+                                                        </li>
+                                                        {{/each}}
+                                                    </ol>
+                                                </div>
+                                                <div>
+                                                    <h6>Available</h6>
+                                                    {{#if this.availableShift2}}
+                                                    <ol class="SAC">
+                                                        {{#each this.availableShift2}}
+                                                        <li class="{{#isSAC this.fields.Name}}{{/isSAC}}">
+                                                            {{this.fields.Name}}
+                                                        </li>
+                                                        {{/each}}
+                                                    </ol>
+                                                    {{else}}
+                                                    <div>
+                                                        No other SAC available.
+                                                    </div>
+                                                    {{/if}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/unless}}
+                        </div>
+                        {{/ifEquals}}
+                </td>
+                {{/each}}
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
 </div>
 {{else}}
 <div class="empty container">
