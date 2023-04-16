@@ -1,11 +1,22 @@
 table.calendar {
-    /* border-collapse:separate; */
-    border-radius: 2rem;
+    width: 100%;
+    border-collapse: separate;
+
     overflow: hidden;
 }
 
+
+tr th,
 tr td {
-    background-color: white !important;
+    border-radius: 8px;
+}
+
+thead {
+    background-color: #135194AA;
+}
+
+tbody {
+    background-color: #FFFFFFBB;
 }
 
 .schedule select,
@@ -50,7 +61,7 @@ tr td {
 .calendar ol {
     padding: 0;
     list-style-position: outside;
-    display: inline-block;   
+    display: inline-block;
 }
 
 .calendar ol li {
@@ -66,13 +77,32 @@ div.container {
     padding: 0.3rem 1.5rem;
 }
 
-.calendar .day {
+.calendar tbody td {
+    position: relative;
+}
+
+.calendar .day-of-month {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 32px;
+    width: 32px;
+    line-height: 16px;
     font-weight: 900;
-    /* width: 35px;
-    height: 35px;
-    line-height: 35px;
-    border-radius: 50%;
+    padding: 10px;
+    /*  border-radius: 50%;
     margin: .5rem auto;
     background-color: rgba(19, 81, 148, 0.2); */
-    
+}
+
+.calendar .calendar-content {
+    /* position: relative; */
+    margin-top: 36px;
+}
+
+
+.calendar td div {
+    /* background-color: #000fff55;
+    outline: 3px solid red; */
 }

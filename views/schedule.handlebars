@@ -61,12 +61,12 @@
     </div>
 </div>
 {{#if selectedMonth includeZero=true}}
-<div class="schedule container">
+<div class="schedule container pb-5">
     <div class="text-center my-3">
         <h2 class="fw-bold">Makerspace Duty Roster</h2>
         <h3 class="fw-bold">{{formatDate startOfMonth 'MMMM YYYY'}}</h3>
     </div>
-    <table class="table table-sm text-center table-bordered calendar">
+    <table class="table-sm text-center calendar">
         <thead>
             <tr class="table-secondary">
                 <th>Sun</th>
@@ -95,8 +95,8 @@
                     {{#ifEquals this.date ''}}
                     <div></div>
                     {{else}}
-                    <div class="day">{{formatDate this.date 'D'}}</div>
-                    <div>
+                    <div class="day-of-month">{{formatDate this.date 'D'}}</div>
+                    <div class="calendar-content">
                         {{#unless (isWeekend this.date)}}
                         <div>
                             <h6>Shift 1</h6>

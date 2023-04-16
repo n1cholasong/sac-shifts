@@ -7,23 +7,27 @@
     box-sizing: border-box;
 }
 
-body {
-    background-color: #BBCCF7;
-    height: 100vh;
-    font-size: 16px;
+html {
+    height: 100%;
 }
 
-main {
-    height: calc(100% - 74px);
-    /* Minus height of navbar (74px) */
+body {
+    position: fixed;
+    background-color: #BBCCF7;
+    height: 100%;
+    width: 100%;
+    font-size: 16px;
     background-image: url(/img/layered-waves-haikei.svg);
     background-repeat: no-repeat;
     background-size: cover;
-    /* overflow-y: auto; */
+    background-position: center center;
 }
 
 main {
-
+    position: static;
+    height: calc(100% - 74px);
+    /* Minus height of navbar (74px) */
+    overflow-y: auto;
 }
 
 h1,
