@@ -10,6 +10,7 @@
 body {
     background-color: #BBCCF7;
     height: 100vh;
+    font-size: 16px;
 }
 
 main {
@@ -18,7 +19,11 @@ main {
     background-image: url(/img/layered-waves-haikei.svg);
     background-repeat: no-repeat;
     background-size: cover;
-    overflow-y: auto;
+    /* overflow-y: auto; */
+}
+
+main {
+
 }
 
 h1,

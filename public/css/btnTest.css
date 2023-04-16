@@ -57,8 +57,7 @@
 	mix-blend-mode: hard-light;
 }
 
-.btn-3d:hover,
-.btn-3d:focus {
+.btn-3d:hover {
 	background-position: calc(100% + 1px) 50%;
 	box-shadow:
 		0 0.15em 1.5em rgba(136, 67, 231, 0.666),
@@ -77,13 +76,12 @@
 	background: linear-gradient(var(--angle), rgba(97, 56, 216, 0) 33.3%, #6138d8 66.6%, #6138d8 85%, rgba(177, 67, 231, 0.9)) no-repeat -1px 50%/300% calc(100% + 2px);
 }
 
-.btn-3d-outline:hover,
-.btn-3d-outline:focus {
+.btn-3d-outline:hover {
 	color: white;
 }
 
 .btn-3d:hover::after,
 .btn-3d-outline:hover::after,
 .btn-3d-outline:focus::after {
-  opacity: 0;
+	/* opacity: 0; */
 }

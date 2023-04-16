@@ -6,7 +6,6 @@ table.calendar {
 
 tr td {
     background-color: white !important;
-
 }
 
 .schedule select,
@@ -65,4 +64,15 @@ div.container {
 .calendar .btn-main {
     font-size: 0.8rem;
     padding: 0.3rem 1.5rem;
+}
+
+.calendar .day {
+    font-weight: 900;
+    /* width: 35px;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 50%;
+    margin: .5rem auto;
+    background-color: rgba(19, 81, 148, 0.2); */
+    
 }
