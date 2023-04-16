@@ -16,7 +16,8 @@ const simpleRecord = (record) => {
 
 const getRecords = async () => {
     var availability = [];
-    await table
+    try {
+        await table
         .select({
             view: "Main View (DO NOT DELETE)",
             sort: [{ field: "DateAvailable", direction: "asc" }]
@@ -26,12 +27,17 @@ const getRecords = async () => {
                 availability.push(record._rawJson)
             });
         })
+    }
+    catch (error) {
+        console.log(error, "getRecords");
+    }
     return availability;
 };
 
 const getSAC = async () => {
     var students = [];
-    await SAC
+    try {
+        await SAC
         .select({
             view: "SAC (DO NOT DELETE)",
             sort: [{ field: "Batch", direction: "asc" }]
@@ -41,6 +47,9 @@ const getSAC = async () => {
                 students.push(record._rawJson)
             });
         });
+    } catch (error) {
+        console.log(error, "getSAC");
+    }
     return students;
 }
 

@@ -289,17 +289,14 @@ router.post('/submitAvailability/add', function (req, res) {
         // Convert checkboxes selection to an arry if its not one
         if (!Array.isArray(shift)) { shift = [shift]; }
         shift.forEach((availability) => {
-            const shiftType = availability.slice(0, 2);
-            const date = availability.slice(3);
+            const shiftType = availability.slice(0, 3);
+            const date = availability.slice(4);
             let type = null;
 
-            if (shiftType == 'S1') {
-                type = 'Term Shift 1';
-            } else if (shiftType == 'S2') {
-                type = 'Term Shift 2';
-            } else {
-                type = null;
-            }
+            if (shiftType == 'TS1') {type = 'Term Shift 1';} 
+            if (shiftType == 'TS2') {type = 'Term Shift 2';} 
+            if (shiftType == 'HS1') {type = 'Holiday Shift 1';} 
+            if (shiftType == 'HS2') {type = 'Holiday Shift 2';} 
 
             const fields = { SAC: [dataId], DateAvailable: date, ShiftType: type }
             Shift.addAvalilability(fields);
