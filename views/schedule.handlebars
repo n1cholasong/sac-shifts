@@ -63,8 +63,8 @@
 {{#if selectedMonth includeZero=true}}
 <div class="schedule container">
     <div class="text-center my-3">
-        <h2>Makerspace Duty Roster</h2>
-        <h3>{{formatDate startOfMonth 'MMMM YYYY'}}</h3>
+        <h2 class="fw-bold">Makerspace Duty Roster</h2>
+        <h3 class="fw-bold">{{formatDate startOfMonth 'MMMM YYYY'}}</h3>
     </div>
     <table class="table table-sm text-center table-bordered calendar">
         <thead>
@@ -123,7 +123,7 @@
                         </div>
 
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-main" data-bs-toggle="modal"
+                        <button type="button" class="btn-3d btn-3d-outline" data-bs-toggle="modal"
                             data-bs-target="#D-{{formatDate this.date 'YYYYMMDD'}}">
                             View Shift
                         </button>
