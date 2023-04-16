@@ -28,11 +28,11 @@
 }
 
 .btn-main:active {
-    background: #E77B95;
+    /* background: #E77B95; */
     /* pointer-events: none; */
     /* outline: none; */
     /* border: transparent; */
-    /* color: rgba(255, 255, 255, .9); */
+    /* color: rgba(0, 0, 255, .9); */
 }
 
 .btn-main:hover {

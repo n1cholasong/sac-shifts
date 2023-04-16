@@ -10,18 +10,20 @@
 }
 
 .home .card .img-box>img {
-    width: 350px;
+    width: 300px
 }
 
 .home .card .title h1 {
     font-size: 4rem;
-    /* color: #426696; */
     font-weight: 600;
+    white-space: nowrap;
+    /* color: #426696; */
 }
 
 .home .card .title h3 {
     font-size: 2.25rem;
     font-weight: 500;
+    /* white-space: nowrap; */
     /* color: #658EC6; */
 }
 
@@ -29,4 +31,15 @@ main,
 .home,
 .card {
     /* border: 5px solid black; */
+}
+
+
+@media (max-width: 1024px) {
+    .home .card .img-box {
+        display: none !important;
+    }
+
+    .home .card .title {
+        text-align: center;
+    }
 }

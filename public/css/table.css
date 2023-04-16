@@ -21,7 +21,7 @@ tr td {
 
 .submit .checkbox-item {
     cursor: pointer;
-    margin: .1rem 0;
+    margin: .3rem;
 }
 
 .submit .checkbox-item input[type="checkbox"] {
@@ -30,7 +30,7 @@ tr td {
 
 .submit .checkbox-item input[type="checkbox"]:checked+.checkbox-label {
     background: linear-gradient(-45deg, #614385 0%, #516395 100%);
-    border: 1px solid var(--ultramarine);
+    outline: 1px solid var(--ultramarine);
     color: white;
 }
 
