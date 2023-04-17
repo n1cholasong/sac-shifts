@@ -77,9 +77,9 @@
             </div>
         </div>
 
-        <table id="calendar" class="table table-sm text-center table-bordered calendar">
+        <table id="calendar" class="table-sm text-center calendar">
             <thead>
-                <tr class="table-secondary table-top">
+                <tr class="day-of-week">
                     <th>Sun</th>
                     <th>Mon</th>
                     <th>Tue</th>
@@ -92,7 +92,7 @@
             <tbody>
                 <div>
                     {{#each weeks}}
-                    <tr class="table-light">
+                    {{!-- <tr class="table-light">
                         {{#each this}}
                         {{#ifEquals this ''}}
                         <th></th>
@@ -100,42 +100,46 @@
                         <th>{{formatDate this 'D MMM'}}</th>
                         {{/ifEquals}}
                         {{/each}}
-                    </tr>
+                    </tr> --}}
                     <tr>
                         {{#each this}}
                         {{#ifEquals this ''}}
                         <td></td>
                         {{else}}
                         <td>
+                            <div class="day-of-month">{{formatDate this 'D'}}</div>
                             {{#if (isWeekend this)}}
                             <div></div>
                             {{else}}
-                            <div class="d-flex flex-column term-shifts">
-                                <label for="TS1-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
-                                    <input type="checkbox" name="shifts" id="TS1-{{formatDate this 'YYYY-MM-DD'}}"
-                                        value="TS1-{{formatDate this 'YYYY-MM-DD'}}">
-                                    <span class="checkbox-label"><i class="fa-solid fa-school"></i> Shift 1</span>
-                                </label>
-                                <label for="TS2-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
-                                    <input type="checkbox" name="shifts" id="TS2-{{formatDate this 'YYYY-MM-DD'}}"
-                                        value="TS2-{{formatDate this 'YYYY-MM-DD'}}">
-                                    <span class="checkbox-label"><i class="fa-solid fa-school"></i> Shift 2</span>
-                                </label>
+                            <div class="calendar-content">
+                                <div class="d-flex flex-column term-shifts ">
+                                    <label for="TS1-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
+                                        <input type="checkbox" name="shifts" id="TS1-{{formatDate this 'YYYY-MM-DD'}}"
+                                            value="TS1-{{formatDate this 'YYYY-MM-DD'}}">
+                                        <span class="checkbox-label"><i class="fa-solid fa-school"></i> Shift 1</span>
+                                    </label>
+                                    <label for="TS2-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
+                                        <input type="checkbox" name="shifts" id="TS2-{{formatDate this 'YYYY-MM-DD'}}"
+                                            value="TS2-{{formatDate this 'YYYY-MM-DD'}}">
+                                        <span class="checkbox-label"><i class="fa-solid fa-school"></i> Shift 2</span>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column holiday-shifts d-none">
+                                    <label for="HS1-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
+                                        <input type="checkbox" name="shifts" id="HS1-{{formatDate this 'YYYY-MM-DD'}}"
+                                            value="HS1-{{formatDate this 'YYYY-MM-DD'}}">
+                                        <span class="checkbox-label"><i class="fa-solid fa-umbrella-beach"></i> Shift
+                                            1</span>
+                                    </label>
+                                    <label for="HS2-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
+                                        <input type="checkbox" name="shifts" id="HS2-{{formatDate this 'YYYY-MM-DD'}}"
+                                            value="HS2-{{formatDate this 'YYYY-MM-DD'}}">
+                                        <span class="checkbox-label"><i class="fa-solid fa-umbrella-beach"></i> Shift
+                                            2</span>
+                                    </label>
+                                </div>
                             </div>
-                            <div class="d-flex flex-column holiday-shifts d-none">
-                                <label for="HS1-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
-                                    <input type="checkbox" name="shifts" id="HS1-{{formatDate this 'YYYY-MM-DD'}}"
-                                        value="HS1-{{formatDate this 'YYYY-MM-DD'}}">
-                                    <span class="checkbox-label"><i class="fa-solid fa-umbrella-beach"></i> Shift
-                                        1</span>
-                                </label>
-                                <label for="HS2-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
-                                    <input type="checkbox" name="shifts" id="HS2-{{formatDate this 'YYYY-MM-DD'}}"
-                                        value="HS2-{{formatDate this 'YYYY-MM-DD'}}">
-                                    <span class="checkbox-label"><i class="fa-solid fa-umbrella-beach"></i> Shift
-                                        2</span>
-                                </label>
-                            </div>
+
                             {{/if}}
                         </td>
                         {{/ifEquals}}

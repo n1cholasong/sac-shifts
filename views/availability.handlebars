@@ -20,9 +20,9 @@
     <div class="text-center my-3">
         <h2 class="fw-bold">{{formatDate startOfMonth 'MMMM YYYY'}} Availabilities</h2>
     </div>
-    <table class="table table-sm text-center table-bordered my-3 calendar">
+    <table class="table-sm text-center calendar my-5">
         <thead>
-            <tr class="table-secondary">
+            <tr class="day-of-week">
                 <th>Sun</th>
                 <th>Mon</th>
                 <th>Tue</th>
@@ -34,7 +34,7 @@
         </thead>
         <tbody>
             {{#each weeks}}
-            <tr class="table-light">
+            {{!-- <tr class="table-light">
                 {{#each this}}
                 {{#ifEquals this.dateString ''}}
                 <th></th>
@@ -42,15 +42,19 @@
                 <th>{{formatDate this.dateString 'D MMM'}}</th>
                 {{/ifEquals}}
                 {{/each}}
-            </tr>
+            </tr> --}}
             <tr>
                 {{#each this}}
                 <td class="pt-3">
-                    {{#if (isWeekend this.dateString)}}
-                    <div>
-                    </div>
+                    {{#ifEquals this.dateString ''}}
+                    <div></div>
                     {{else}}
-                    <div>
+                    <div class="day-of-month">{{formatDate this.dateString 'D'}}</div>
+                    {{/ifEquals}}
+                    {{#if (isWeekend this.dateString)}}
+                    <div></div>
+                    {{else}}
+                    <div class="calendar-content">
                         {{#if this.sortedShift1}}
                         <div class="mb-3">
                             <h6>
