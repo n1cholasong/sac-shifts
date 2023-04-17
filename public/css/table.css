@@ -1,34 +1,34 @@
 table.calendar {
+    /* height: 100%; */
     width: 100%;
     border-collapse: separate;
-
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
-thead {
+table.calendar thead {
     background-color: #13519455;
 }
 
-tbody {
+table.calendar tbody {
     background-color: #FFFFFFBB;
 }
 
 
-tr td {
-    height: 112px;
+table.calendar tr td {
+    height: 95px;
 }
 
-td:first-child,
-td:last-child {
+table.calendar td:first-child,
+table.calendar td:last-child {
     width: calc((100% / 7) / 3);
 }
 
-td:not(:first-child):not(:last-child) {
+table.calendar td:not(:first-child):not(:last-child) {
     width: calc(100% / 7);
 }
 
-tr th,
-tr td {
+table.calendar tr th,
+table.calendar tr td {
     border-radius: 8px;
 }
 
@@ -39,7 +39,7 @@ tr td {
 
 .schedule .SAC,
 .availabilities .SAC {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 
 .submit .checkbox-item {
@@ -71,13 +71,13 @@ tr td {
     padding: 0.1em;
 }
 
-.calendar ol {
+table.calendar ol {
     padding: 0;
     list-style-position: outside;
     display: inline-block;
 }
 
-.calendar ol li {
+table.calendar ol li {
     padding: 0 1rem;
 }
 
@@ -85,16 +85,16 @@ div.container {
     padding: 0;
 }
 
-.calendar .btn-main {
+table.calendar .btn-main {
     font-size: 0.8rem;
     padding: 0.3rem 1.5rem;
 }
 
-.calendar tbody td {
+table.calendar tbody td {
     position: relative;
 }
 
-.calendar .day-of-month {
+table.calendar .day-of-month {
     position: absolute;
     top: 0;
     left: 50%;
@@ -104,19 +104,17 @@ div.container {
     line-height: 16px;
     font-weight: 900;
     padding: 10px;
-    /*  border-radius: 50%;
-    margin: .5rem auto;
-    background-color: rgba(19, 81, 148, 0.2); */
 }
 
-.calendar .calendar-content {
+table.calendar .calendar-content {
     position: relative;
     padding-top: 2rem;
     height: 100%;
     /* outline: 1px solid black; */
 }
 
-.calendar td div {
-    /* background-color: #000fff55;
-    outline: 3px solid red; */
+
+.availabilities table.calendar .calendar-content h6,
+.schedule table.calendar .calendar-content h6 {
+    font-weight: 600;
 }

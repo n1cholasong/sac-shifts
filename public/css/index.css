@@ -1,5 +1,4 @@
 .home {
-    /* background-color: blue; */
     height: 100%;
     padding: 0;
 }
@@ -26,13 +25,6 @@
     /* white-space: nowrap; */
     /* color: #658EC6; */
 }
-
-main,
-.home,
-.card {
-    /* border: 5px solid black; */
-}
-
 
 @media (max-width: 1024px) {
     .home .card .img-box {

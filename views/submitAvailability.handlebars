@@ -57,7 +57,7 @@
     {{#if selectedMonth includeZero=true}}
     <div class="submit container">
         <div class="row">
-            <div class="col d-flex flex-column align-items-start justify-content-center ms-3">
+            <div class="col d-flex flex-column align-items-start justify-content-center ms-3 text-muted fw-bold">
                 <div>
                     <i class="fa-solid fa-school me-2"></i> School Term Shifts
                 </div>
@@ -69,7 +69,7 @@
                 <h2 class="fw-bold">Availability for {{formatDate startOfMonth 'MMMM YYYY'}}</h2>
             </div>
             <div class="col d-flex align-items-center justify-content-end me-3">
-                <div class="me-2">Toggle Holiday Shifts</div>
+                <div class="text-muted fw-bold me-2">Toggle Holiday Shifts</div>
                 <label class="switch">
                     <input type="checkbox" id="switch">
                     <span class="slider-main round"></span>
@@ -77,7 +77,7 @@
             </div>
         </div>
 
-        <table id="calendar" class="table-sm text-center calendar">
+        <table id="calendar" class="table-sm text-center calendar mb-4">
             <thead>
                 <tr class="day-of-week">
                     <th>Sun</th>
@@ -106,7 +106,7 @@
                         {{#ifEquals this ''}}
                         <td></td>
                         {{else}}
-                        <td>
+                        <td class="shift-types">
                             <div class="day-of-month">{{formatDate this 'D'}}</div>
                             {{#if (isWeekend this)}}
                             <div></div>
@@ -116,25 +116,25 @@
                                     <label for="TS1-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
                                         <input type="checkbox" name="shifts" id="TS1-{{formatDate this 'YYYY-MM-DD'}}"
                                             value="TS1-{{formatDate this 'YYYY-MM-DD'}}">
-                                        <span class="checkbox-label"><i class="fa-solid fa-school"></i> Shift 1</span>
+                                        <span class="checkbox-label"><i class="fa-solid fa-school mx-1"></i> Shift 1</span>
                                     </label>
                                     <label for="TS2-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
                                         <input type="checkbox" name="shifts" id="TS2-{{formatDate this 'YYYY-MM-DD'}}"
                                             value="TS2-{{formatDate this 'YYYY-MM-DD'}}">
-                                        <span class="checkbox-label"><i class="fa-solid fa-school"></i> Shift 2</span>
+                                        <span class="checkbox-label"><i class="fa-solid fa-school mx-1"></i> Shift 2</span>
                                     </label>
                                 </div>
                                 <div class="d-flex flex-column holiday-shifts d-none">
                                     <label for="HS1-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
                                         <input type="checkbox" name="shifts" id="HS1-{{formatDate this 'YYYY-MM-DD'}}"
                                             value="HS1-{{formatDate this 'YYYY-MM-DD'}}">
-                                        <span class="checkbox-label"><i class="fa-solid fa-umbrella-beach"></i> Shift
+                                        <span class="checkbox-label"><i class="fa-solid fa-umbrella-beach mx-1"></i> Shift
                                             1</span>
                                     </label>
                                     <label for="HS2-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
                                         <input type="checkbox" name="shifts" id="HS2-{{formatDate this 'YYYY-MM-DD'}}"
                                             value="HS2-{{formatDate this 'YYYY-MM-DD'}}">
-                                        <span class="checkbox-label"><i class="fa-solid fa-umbrella-beach"></i> Shift
+                                        <span class="checkbox-label"><i class="fa-solid fa-umbrella-beach mx-1"></i> Shift
                                             2</span>
                                     </label>
                                 </div>
@@ -167,10 +167,8 @@
             termShifts.find('input[type=checkbox]').prop('checked', false);
             holidayShifts.find('input[type=checkbox]').prop('checked', false);
             if ($(this).prop('checked')) {
-                holidayShifts.removeClass('d-none');
-                holidayShifts.removeClass('d-none');
+                holidayShifts.removeClass('d-none').hide().fadeIn(300);
             } else {
-                holidayShifts.addClass('d-none');
                 holidayShifts.addClass('d-none');
             }
         });

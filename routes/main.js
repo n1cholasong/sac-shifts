@@ -86,7 +86,7 @@ router.get('/schedule', function (req, res) {
     let startOfMonth = new Date(year, selectedMonth, 1);
     let endOfMonth = new Date(year, selectedMonth + 1, 0);
 
-    
+
     let availability = [];
     let juniorBatchNo = 0;
     let sacShiftFrequency = {};
@@ -97,62 +97,80 @@ router.get('/schedule', function (req, res) {
 
     if (isNaN(selectedMonth)) {
         res.render('schedule', { title, month, selectedMonth });
-    }
-    Shift.getRecords()
-        .then((result) => {
-            // console.log(result[0]) // JSON TEST
-            result.forEach((record) => {
-                availability.push(record); // Populate the availability array
-                // Look for junior batch
-                const batchNo = parseInt(record.fields.Batch[0].slice(6));
-                if (batchNo > juniorBatchNo) {
-                    juniorBatchNo = batchNo; // Takes the highest batch no.
+    } else {
+        Shift.getRecords()
+            .then((result) => {
+                // console.log(result[0]) // JSON TEST
+                result.forEach((record) => {
+                    availability.push(record); // Populate the availability array
+                    // Look for junior batch
+                    const batchNo = parseInt(record.fields.Batch[0].slice(6));
+                    if (batchNo > juniorBatchNo) {
+                        juniorBatchNo = batchNo; // Takes the highest batch no.
+                    }
+                    // Populate dictionary with name for shift frequency
+                    // const adminNo = record.fields.AdminNo;
+                    const name = record.fields.Name;
+                    if (!(name in sacShiftFrequency)) {
+                        sacShiftFrequency[name] = 0; // Defaults to 0
+                    }
+                })
+
+                for (let date = new Date(startOfMonth); date <= endOfMonth; date.setDate(date.getDate() + 1)) {
+                    // Filter SAC on Shift 1 and Shift 2 for the respective day
+                    const shiftOneAvailability = availability
+                        .filter((record =>
+                            record.fields.DateAvailable == moment(date).format('YYYY-MM-DD') && parseInt(record.fields.ShiftType.slice(-1)) === 1
+                        ));
+                    const shiftTwoAvailability = availability
+                        .filter((record =>
+                            record.fields.DateAvailable == moment(date).format('YYYY-MM-DD') && parseInt(record.fields.ShiftType.slice(-1)) === 2
+                        ));
+
+                    const dateString = moment(date).format('YYYY-MM-DD');
+                    const sortedShift1 = (shiftOneAvailability.length > 0) ? shuffleArray(shiftOneAvailability).sort((a, b) => a.fields.PriorityScore[0] - b.fields.PriorityScore[0]) : [];
+                    const sortedShift2 = (shiftTwoAvailability.length > 0) ? shuffleArray(shiftTwoAvailability).sort((a, b) => a.fields.PriorityScore[0] - b.fields.PriorityScore[0]) : [];
+                    const shifts = { dateString, sortedShift1, sortedShift2 }
+                    shiftsByDate.push(shifts);
+
+                    // sortedShift1.forEach(score => { console.log(score.fields.PriorityScore[0]) }) // LOG TEST
                 }
-                // Populate dictionary with name for shift frequency
-                // const adminNo = record.fields.AdminNo;
-                const name = record.fields.Name;
-                if (!(name in sacShiftFrequency)) {
-                    sacShiftFrequency[name] = 0; // Defaults to 0
-                }
-            })
 
-            for (let date = new Date(startOfMonth); date <= endOfMonth; date.setDate(date.getDate() + 1)) {
-                // Filter SAC on Shift 1 and Shift 2 for the respective day
-                const shiftOneAvailability = availability
-                    .filter((record =>
-                        record.fields.DateAvailable == moment(date).format('YYYY-MM-DD') && parseInt(record.fields.ShiftType.slice(-1)) === 1
-                    ));
-                const shiftTwoAvailability = availability
-                    .filter((record =>
-                        record.fields.DateAvailable == moment(date).format('YYYY-MM-DD') && parseInt(record.fields.ShiftType.slice(-1)) === 2
-                    ));
+                // Shift allocation
+                shiftsByDate.forEach((day) => {
+                    const dayAllocation = []; // Stores AdminNo to prevent SACs getting assigned 2 shifts in a day 
+                    const date = day.dateString;
+                    const shift1 = [];
+                    const shift2 = [];
+                    const availableShift1 = [];
+                    const availableShift2 = [];
+                    const dutyRoster = { date, shift1, shift2, availableShift1, availableShift2 }
 
-                const dateString = moment(date).format('YYYY-MM-DD');
-                const sortedShift1 = (shiftOneAvailability.length > 0) ? shuffleArray(shiftOneAvailability).sort((a, b) => a.fields.PriorityScore[0] - b.fields.PriorityScore[0]) : [];
-                const sortedShift2 = (shiftTwoAvailability.length > 0) ? shuffleArray(shiftTwoAvailability).sort((a, b) => a.fields.PriorityScore[0] - b.fields.PriorityScore[0]) : [];
-                const shifts = { dateString, sortedShift1, sortedShift2 }
-                shiftsByDate.push(shifts);
-
-                // sortedShift1.forEach(score => { console.log(score.fields.PriorityScore[0]) }) // LOG TEST
-            }
-
-            // Shift allocation
-            shiftsByDate.forEach((day) => {
-                const dayAllocation = []; // Stores AdminNo to prevent SACs getting assigned 2 shifts in a day 
-                const date = day.dateString;
-                const shift1 = [];
-                const shift2 = [];
-                const availableShift1 = [];
-                const availableShift2 = [];
-                const dutyRoster = { date, shift1, shift2, availableShift1, availableShift2 }
-
-                // Main Allocation Algorithm
-                function allocateShift(shiftAvalability, shiftRoster, shiftReserve) {
-                    let seniorAllocated = false;
-                    //Assign at least one senior to shift
-                    for (let i = 0; i < shiftAvalability.length; i++) {
-                        if (seniorAllocated) { break; }
-                        if (parseInt(shiftAvalability[i].fields.Batch[0].slice(6)) !== juniorBatchNo) {
+                    // Main Allocation Algorithm
+                    function allocateShift(shiftAvalability, shiftRoster, shiftReserve) {
+                        let seniorAllocated = false;
+                        //Assign at least one senior to shift
+                        for (let i = 0; i < shiftAvalability.length; i++) {
+                            if (seniorAllocated) { break; }
+                            if (parseInt(shiftAvalability[i].fields.Batch[0].slice(6)) !== juniorBatchNo) {
+                                const adminNo = shiftAvalability[i].fields.AdminNo[0];
+                                const name = shiftAvalability[i].fields.Name;
+                                if (!dayAllocation.includes(adminNo)) {
+                                    shiftRoster.push(shiftAvalability[i]);
+                                    shiftAvalability.splice(i, 1);
+                                    dayAllocation.push(adminNo);
+                                    sacShiftFrequency[name] += 1;
+                                    seniorAllocated = true;
+                                }
+                            }
+                            continue;
+                        }
+                        if (shiftRoster.length == 0) {
+                            shiftRoster.push({ fields: { DateAvailable: moment(date).format('YYYY-MM-DD'), Name: ['No Senior Available!'] } });
+                        }
+                        // Add remaining SAC to Shift
+                        let i = 0;
+                        while (shiftRoster.length < 3 && shiftAvalability.length > 0 && i < shiftAvalability.length) {
                             const adminNo = shiftAvalability[i].fields.AdminNo[0];
                             const name = shiftAvalability[i].fields.Name;
                             if (!dayAllocation.includes(adminNo)) {
@@ -160,67 +178,50 @@ router.get('/schedule', function (req, res) {
                                 shiftAvalability.splice(i, 1);
                                 dayAllocation.push(adminNo);
                                 sacShiftFrequency[name] += 1;
-                                seniorAllocated = true;
+                            } else {
+                                i++;
                             }
                         }
-                        continue;
-                    }
-                    if (shiftRoster.length == 0) {
-                        shiftRoster.push({ fields: { DateAvailable: moment(date).format('YYYY-MM-DD'), Name: ['No Senior Available!'] } });
-                    }
-                    // Add remaining SAC to Shift
-                    let i = 0;
-                    while (shiftRoster.length < 3 && shiftAvalability.length > 0 && i < shiftAvalability.length) {
-                        const adminNo = shiftAvalability[i].fields.AdminNo[0];
-                        const name = shiftAvalability[i].fields.Name;
-                        if (!dayAllocation.includes(adminNo)) {
-                            shiftRoster.push(shiftAvalability[i]);
-                            shiftAvalability.splice(i, 1);
-                            dayAllocation.push(adminNo);
-                            sacShiftFrequency[name] += 1;
-                        } else {
-                            i++;
+                        while (shiftRoster.length < 3) {
+                            shiftRoster.push({ fields: { DateAvailable: moment(date).format('YYYY-MM-DD'), Name: ['No SAC Available!'] } });
                         }
+
+                        shiftAvalability.forEach(availability => shiftReserve.push(availability))
                     }
-                    while (shiftRoster.length < 3) {
-                        shiftRoster.push({ fields: { DateAvailable: moment(date).format('YYYY-MM-DD'), Name: ['No SAC Available!'] } });
+
+                    const seniorOnShift1 = day.sortedShift1.filter((record) => parseInt(record.fields.Batch[0].slice(6)) !== juniorBatchNo);
+                    const seniorOnShift2 = day.sortedShift2.filter((record) => parseInt(record.fields.Batch[0].slice(6)) !== juniorBatchNo);
+                    const shift1ByFrequency = day.sortedShift1.sort((a, b) => sacShiftFrequency[a.fields.Name[0]] - sacShiftFrequency[b.fields.Name[0]])
+                    const shift2ByFrequency = day.sortedShift2.sort((a, b) => sacShiftFrequency[a.fields.Name[0]] - sacShiftFrequency[b.fields.Name[0]])
+
+                    // Allocate shifts with the least senior first 
+                    if (seniorOnShift1.length < seniorOnShift2.length) {
+                        allocateShift(shift1ByFrequency, shift1, availableShift1);
+                        allocateShift(shift2ByFrequency, shift2, availableShift2);
+                    } else {
+                        allocateShift(shift2ByFrequency, shift2, availableShift2);
+                        allocateShift(shift1ByFrequency, shift1, availableShift1);
                     }
 
-                    shiftAvalability.forEach(availability => shiftReserve.push(availability))
-                }
+                    schedule.push(dutyRoster);
+                });
 
-                const seniorOnShift1 = day.sortedShift1.filter((record) => parseInt(record.fields.Batch[0].slice(6)) !== juniorBatchNo);
-                const seniorOnShift2 = day.sortedShift2.filter((record) => parseInt(record.fields.Batch[0].slice(6)) !== juniorBatchNo);
-                const shift1ByFrequency = day.sortedShift1.sort((a, b) => sacShiftFrequency[a.fields.Name[0]] - sacShiftFrequency[b.fields.Name[0]])
-                const shift2ByFrequency = day.sortedShift2.sort((a, b) => sacShiftFrequency[a.fields.Name[0]] - sacShiftFrequency[b.fields.Name[0]])
+                const firstDayIndex = startOfMonth.getDay();
+                const lastDayIndex = endOfMonth.getDay();
 
-                // Allocate shifts with the least senior first 
-                if (seniorOnShift1.length < seniorOnShift2.length) {
-                    allocateShift(shift1ByFrequency, shift1, availableShift1);
-                    allocateShift(shift2ByFrequency, shift2, availableShift2);
-                } else {
-                    allocateShift(shift2ByFrequency, shift2, availableShift2);
-                    allocateShift(shift1ByFrequency, shift1, availableShift1);
-                }
+                //Format shift schedule into weeks 
+                for (let i = 0; i < firstDayIndex; i++) { schedule.unshift({ date: '', shift1: '', shift2: '' }); }
+                for (let i = lastDayIndex; i < 6; i++) { schedule.push({ date: '', shift1: '', shift2: '' }); }
+                while (schedule.length > 0) { weeklySchedule.push(schedule.splice(0, 7)); }
 
-                schedule.push(dutyRoster);
-            });
+                const sortedSacShiftFrequency = Object.fromEntries(
+                    Object.entries(sacShiftFrequency).sort(([, a], [, b]) => a - b)
+                );
 
-            const firstDayIndex = startOfMonth.getDay();
-            const lastDayIndex = endOfMonth.getDay();
-
-            //Format shift schedule into weeks 
-            for (let i = 0; i < firstDayIndex; i++) { schedule.unshift({ date: '', shift1: '', shift2: '' }); }
-            for (let i = lastDayIndex; i < 6; i++) { schedule.push({ date: '', shift1: '', shift2: '' }); }
-            while (schedule.length > 0) { weeklySchedule.push(schedule.splice(0, 7)); }
-
-            const sortedSacShiftFrequency = Object.fromEntries(
-                Object.entries(sacShiftFrequency).sort(([, a], [, b]) => a - b)
-            );
-
-            res.render('schedule', { title, month, selectedMonth, startOfMonth, weeklySchedule, sortedSacShiftFrequency })
-        })
-        .catch(error => console.error(error));
+                res.render('schedule', { title, month, selectedMonth, startOfMonth, weeklySchedule, sortedSacShiftFrequency })
+            })
+            .catch(error => console.error(error));
+    }
 });
 
 router.get('/submitAvailability', function (req, res) {
@@ -293,10 +294,10 @@ router.post('/submitAvailability/add', function (req, res) {
             const date = availability.slice(4);
             let type = null;
 
-            if (shiftType == 'TS1') {type = 'Term Shift 1';} 
-            if (shiftType == 'TS2') {type = 'Term Shift 2';} 
-            if (shiftType == 'HS1') {type = 'Holiday Shift 1';} 
-            if (shiftType == 'HS2') {type = 'Holiday Shift 2';} 
+            if (shiftType == 'TS1') { type = 'Term Shift 1'; }
+            if (shiftType == 'TS2') { type = 'Term Shift 2'; }
+            if (shiftType == 'HS1') { type = 'Holiday Shift 1'; }
+            if (shiftType == 'HS2') { type = 'Holiday Shift 2'; }
 
             const fields = { SAC: [dataId], DateAvailable: date, ShiftType: type }
             Shift.addAvalilability(fields);

@@ -22,7 +22,7 @@
                         </div>
 
                         <div class="modal-body">
-                            <table class="table table-sm ">
+                            <table class="table table-sm stats">
                                 <tr>
                                     <th class="w-50">SAC</th>
                                     <th>No. of shift allocated</th>
@@ -36,11 +36,11 @@
                             </table>
                         </div>
                         <div class="modal-footer">
-                            <p class="SAC">
-                                Please be aware that while the algorithm aims to distribute shifts equally among all
-                                individuals based on their availability, it is not perfect. It does not take into
-                                account the previous day shift allocation, so there may be instances where an
-                                individual is assigned to shifts on two or more consecutive days.
+                            <p class="note text-muted">
+                                Please note that although the algorithm attempts to distribute shifts evenly among all
+                                available SACs, it has its limitations (for now). It does not factor in previous day
+                                shift allocations, which could result SAC being assigned to shifts on two
+                                or more consecutive days.
                             </p>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
     </div>
 </div>
 {{#if selectedMonth includeZero=true}}
-<div class="schedule container pb-5">
+<div class="schedule container mb-4">
     <div class="text-center my-3">
         <h2 class="fw-bold">Makerspace Duty Roster</h2>
         <h3 class="fw-bold">{{formatDate startOfMonth 'MMMM YYYY'}}</h3>
