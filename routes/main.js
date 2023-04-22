@@ -11,7 +11,31 @@ router.get('/', function (req, res,) {
 
 router.get('/test', function (req, res,) {
     title = "Test Env";
-    res.render('test', { title });
+    const name = []
+
+    Shift.getStudentObject()
+        .then((result) => {
+            // console.log(result[0])
+            // result.forEach((SAC) => {
+            //     name.push({
+            //         name: SAC.getName(),
+            //         availability: SAC.getAvailability()
+            //     });
+
+            // })
+
+            result[0].addAvailability();
+            result[0].addAvailability("Hello", 1);
+            result[0].addAvailability("World", 1);
+            result[0].addAvailability("Nicholas", 1);
+            console.log(result[0].getAvailability());
+            result[0].removeAvailability(3, 1);
+            console.log(result[0].getAvailability());
+            res.status(200).send(result[0]);
+        })
+        .catch(error => res.status(400).send({ "message": error.toString() }))
+    // .catch(error => console.error(error));
+    // res.render('test', { title });
 })
 
 // Not in use
@@ -100,7 +124,7 @@ router.get('/schedule', function (req, res) {
     } else {
         Shift.getRecords()
             .then((result) => {
-                // console.log(result[0]) // JSON TEST
+                console.log(result[0]) // JSON TEST
                 result.forEach((record) => {
                     availability.push(record); // Populate the availability array
                     // Look for junior batch
