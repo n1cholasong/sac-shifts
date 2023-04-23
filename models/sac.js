@@ -5,7 +5,7 @@ class SAC {
         this.adminNo = adminNo;
         this.batchNo = batchNo;
         this.availability = { shift1: new Array(), shift2: new Array() }
-        this.shiftsAvailable = 0;
+        this.shiftsAvailable = this.availability.shift1.length + this.availability.shift2.length;
         this.daysAvailable = 0;
     }
 
@@ -30,6 +30,14 @@ class SAC {
     }
 
     setAdminNo(adminNo) {
+        if (!adminNo) {
+            throw new Error(`Invalid arguments. Expected usage: setAdminNo(adminNo: string)`);
+        }
+        if (typeof adminNo !== "number") {
+            throw new TypeError(`Expected adminNo to be a string, but got ${typeof adminNo} instead`);
+        }
+
+        this.batchNo = batchNo;
         this.adminNo = adminNo;
     }
 
@@ -38,6 +46,13 @@ class SAC {
     }
 
     setBatchNo(batchNo) {
+        if (!batchNo) {
+            throw new Error(`Invalid arguments. Expected usage: setBatchNo(batchNo: number)`);
+        }
+        if (typeof batchNo !== "number") {
+            throw new TypeError(`Expected batchNo to be a number, but got ${typeof batchNo} instead`);
+        }
+
         this.batchNo = batchNo;
     }
 

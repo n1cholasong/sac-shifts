@@ -1,8 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const Shift = require("../models/airtable");
+const airtable = require("../services/airtable");
+const { cacheFunction } = require("../helpers/cache");
 const moment = require('moment');
+const { error } = require('flash-messenger/Alert');
 
+const cacheDurationMillisecond = 1000 * 60 * 5; // 5 mins
+let cachedAvailability = cacheFunction(airtable.getRecords(), cacheDurationMillisecond);
+let cachedSAC = cacheFunction(airtable.getSAC(), cacheDurationMillisecond);
 
 router.get('/', function (req, res,) {
     title = "Home";
@@ -13,7 +18,7 @@ router.get('/test', function (req, res,) {
     title = "Test Env";
     const name = []
 
-    Shift.getStudentObject()
+    airtable.getRecords()
         .then((result) => {
             // console.log(result[0])
             // result.forEach((SAC) => {
@@ -23,15 +28,9 @@ router.get('/test', function (req, res,) {
             //     });
 
             // })
+            // airtable.getAvailability();
 
-            result[0].addAvailability();
-            result[0].addAvailability("Hello", 1);
-            result[0].addAvailability("World", 1);
-            result[0].addAvailability("Nicholas", 1);
-            console.log(result[0].getAvailability());
-            result[0].removeAvailability(3, 1);
-            console.log(result[0].getAvailability());
-            res.status(200).send(result[0]);
+            res.status(200).send(result[0].name);
         })
         .catch(error => res.status(400).send({ "message": error.toString() }))
     // .catch(error => console.error(error));
@@ -40,15 +39,15 @@ router.get('/test', function (req, res,) {
 
 // Not in use
 router.get('/availabilityList', function (req, res,) {
-    title = "SAC Availability List";
-    Shift.getRecords()
+    const title = "SAC Availability List";
+    airtable.getRecords()
         .then((SAC) => {
             res.render('availabilityList', { title, SAC });
         })
         .catch(error => console.error(error));
 })
 
-router.get('/availability', function (req, res,) {
+router.get('/availability', async function (req, res,) {
     const title = "SAC Availability";
     const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     let dateConfig = new Date(), year = dateConfig.getFullYear();
@@ -63,39 +62,45 @@ router.get('/availability', function (req, res,) {
     const weeks = [];
 
     if (isNaN(selectedMonth)) {
-        res.render('availability', { title, month, selectedMonth })
+        cachedAvailability = cacheFunction(airtable.getRecords(), cacheDurationMillisecond);
+        res.render('availability', { title, month, selectedMonth });
     } else {
-        Shift.getRecords()
-            .then((result) => {
-                for (let date = new Date(startOfMonth); date <= endOfMonth; date.setDate(date.getDate() + 1)) {
-                    // Filter SAC on Shift 1 and Shift 2 for the respective day
-                    const shiftOneAvailability = result
-                        .filter((record =>
-                            record.fields.DateAvailable == moment(date).format('YYYY-MM-DD') && parseInt(record.fields.ShiftType.slice(-1)) === 1
-                        ));
-                    const shiftTwoAvailability = result
-                        .filter((record =>
-                            record.fields.DateAvailable == moment(date).format('YYYY-MM-DD') && parseInt(record.fields.ShiftType.slice(-1)) === 2
-                        ));
+        try {
+            const result = await cachedAvailability();
 
-                    const dateString = moment(date).format('YYYY-MM-DD');
-                    const sortedShift1 = (shiftOneAvailability.length > 0) ? shuffleArray(shiftOneAvailability).sort((a, b) => a.fields.PriorityScore - b.fields.PriorityScore) : [];
-                    const sortedShift2 = (shiftTwoAvailability.length > 0) ? shuffleArray(shiftTwoAvailability).sort((a, b) => a.fields.PriorityScore - b.fields.PriorityScore) : [];
-                    const shifts = { dateString, sortedShift1, sortedShift2 }
-                    shiftsByDate.push(shifts);
-                }
+            for (let date = new Date(startOfMonth); date <= endOfMonth; date.setDate(date.getDate() + 1)) {
+                // Filter SAC on Shift 1 and Shift 2 for the respective day
+                const shiftOneAvailability = result
+                    .filter((record =>
+                        record.dateAvailable == moment(date).format('YYYY-MM-DD') && parseInt(record.shiftType.slice(-1)) === 1
+                    ));
+                const shiftTwoAvailability = result
+                    .filter((record =>
+                        record.dateAvailable == moment(date).format('YYYY-MM-DD') && parseInt(record.shiftType.slice(-1)) === 2
+                    ));
 
-                //Format shift schedule into weeks 
-                const firstDayIndex = startOfMonth.getDay();
-                const lastDayIndex = endOfMonth.getDay();
+                const dateString = moment(date).format('YYYY-MM-DD');
+                const sortedShift1 = (shiftOneAvailability.length > 0) ? shuffleArray(shiftOneAvailability).sort((a, b) => a.priorityScore - b.priorityScore) : [];
+                const sortedShift2 = (shiftTwoAvailability.length > 0) ? shuffleArray(shiftTwoAvailability).sort((a, b) => a.priorityScore - b.priorityScore) : [];
+                const shifts = { dateString, sortedShift1, sortedShift2 }
+                shiftsByDate.push(shifts);
+            }
 
-                for (let i = 0; i < firstDayIndex; i++) { shiftsByDate.unshift({ dateString: '', sortedShift1: '', sortedShift2: '' }); }
-                for (let i = lastDayIndex; i < 6; i++) { shiftsByDate.push({ dateString: '', sortedShift1: '', sortedShift2: '' }); }
-                while (shiftsByDate.length > 0) { weeks.push(shiftsByDate.splice(0, 7)); }
+            //Format shift schedule into weeks 
+            const firstDayIndex = startOfMonth.getDay();
+            const lastDayIndex = endOfMonth.getDay();
 
-                res.render('availability', { title, month, selectedMonth, startOfMonth, weeks })
-            })
-            .catch(error => console.error(error));
+            for (let i = 0; i < firstDayIndex; i++) { shiftsByDate.unshift({ dateString: '', sortedShift1: '', sortedShift2: '' }); }
+            for (let i = lastDayIndex; i < 6; i++) { shiftsByDate.push({ dateString: '', sortedShift1: '', sortedShift2: '' }); }
+            while (shiftsByDate.length > 0) { weeks.push(shiftsByDate.splice(0, 7)); }
+
+            res.render('availability', { title, month, selectedMonth, startOfMonth, weeks });
+
+        } catch (err) {
+            console.error(err);
+
+            res.render('error', { title, err });
+        }
     }
 });
 
@@ -122,7 +127,7 @@ router.get('/schedule', function (req, res) {
     if (isNaN(selectedMonth)) {
         res.render('schedule', { title, month, selectedMonth });
     } else {
-        Shift.getRecords()
+        airtable.getRecords()
             .then((result) => {
                 console.log(result[0]) // JSON TEST
                 result.forEach((record) => {
@@ -248,7 +253,7 @@ router.get('/schedule', function (req, res) {
     }
 });
 
-router.get('/submitAvailability', function (req, res) {
+router.get('/submitAvailability', async function (req, res) {
     const title = "Submit Availability";
     const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     let dateConfig = new Date(), year = dateConfig.getFullYear();
@@ -259,7 +264,6 @@ router.get('/submitAvailability', function (req, res) {
     let startOfMonth = new Date(year, selectedMonth, 1);
     let endOfMonth = new Date(year, selectedMonth + 1, 0);
 
-    const SAC = [];
     const days = [];
     const weeks = [];
 
@@ -267,8 +271,10 @@ router.get('/submitAvailability', function (req, res) {
     const success = req.flash('success');
 
     if (isNaN(selectedMonth)) {
+        cachedSAC = cacheFunction(airtable.getSAC(), cacheDurationMillisecond);
         res.render('submitAvailability', { title, month, selectedMonth });
     } else {
+        const SAC = await cachedSAC();
         for (let date = new Date(startOfMonth); date <= endOfMonth; date.setDate(date.getDate() + 1)) {
             days.push(new Date(date));
         }
@@ -281,21 +287,7 @@ router.get('/submitAvailability', function (req, res) {
         for (let i = lastDayIndex; i < 6; i++) { days.push(''); }
         while (days.length > 0) { weeks.push(days.splice(0, 7)); }
 
-        Shift.getSAC()
-            .then((record) => {
-                record.forEach((student) => {
-                    const format = {
-                        Id: student.id,
-                        FullName: student.fields.FullName,
-                        Batch: student.fields.Batch,
-                        SAC: `${student.fields.Batch} | ${student.fields.FullName}`
-                    }
-                    SAC.push(format);
-                });
-
-                res.render('submitAvailability', { title, month, selectedMonth, startOfMonth, weeks, SAC, error, success });
-            })
-            .catch(error => console.log(error));
+        res.render('submitAvailability', { title, month, selectedMonth, startOfMonth, weeks, SAC, error, success });
     }
 });
 
@@ -324,7 +316,7 @@ router.post('/submitAvailability/add', function (req, res) {
             if (shiftType == 'HS2') { type = 'Holiday Shift 2'; }
 
             const fields = { SAC: [dataId], DateAvailable: date, ShiftType: type }
-            Shift.addAvalilability(fields);
+            airtable.addAvalilability(fields);
         });
 
         req.flash('success', `Availabilities submitted for ${name}`);

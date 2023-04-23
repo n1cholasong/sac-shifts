@@ -15,10 +15,10 @@
             {{#each SAC}}
             <tr>
                 <td>{{@index}}</td>
-                <td>{{fields.FullName}}</td>
-                <td>{{fields.Batch}}</td>
-                <td>{{fields.DateAvailable}}</td>
-                <td>{{fields.ShiftType}}</td>
+                <td>{{fullname}}</td>
+                <td>{{batchNo}}</td>
+                <td>{{formatDate dateAvailable 'DD MMM YYYY'}}</td>
+                <td>{{shiftType}}</td>
             </tr>
             {{/each}}
         </tbody>

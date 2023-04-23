@@ -64,7 +64,7 @@
                             <div class="SAC">
                                 <ol>
                                     {{#each this.sortedShift1}}
-                                    <li>{{this.fields.Name}}</li>
+                                    <li>{{this.name}}</li>
                                     {{/each}}
                                 </ol>
                             </div>
@@ -84,7 +84,7 @@
                                         <h6 class="text-danger">No SAC Available!</h6>
                                     </div>
                                     {{else}}
-                                    <li>{{this.fields.Name}}</li>
+                                    <li>{{this.name}}</li>
                                     {{/ifEquals}}
                                     {{/each}}
                                 </ol>
