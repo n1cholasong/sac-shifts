@@ -128,7 +128,6 @@ const getRecordById = async (id) => {
 const addAvalilability = async (fields) => {
     try {
         await adminPlanner.create(fields);
-        console.log("Availability Submitted!")
     }
     catch (err) {
         console.error(err);
