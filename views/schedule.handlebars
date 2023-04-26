@@ -20,7 +20,6 @@
                             <button type="button" class="btn btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
-
                         <div class="modal-body">
                             <table class="table table-sm stats">
                                 <tr>
@@ -82,19 +81,17 @@
             {{#each weeklySchedule}}
             {{!-- <tr class="table-light">
                 {{#each this}}
-                {{#ifEquals this.date ''}}
+                {{#if this.date ''}}
                 <th></th>
                 {{else}}
                 <th>{{formatDate this.date 'D MMM'}}</th>
-                {{/ifEquals}}
+                {{/if}}
                 {{/each}}
             </tr> --}}
             <tr>
                 {{#each this}}
                 <td class="px-3 pb-3">
-                    {{#ifEquals this.date ''}}
-                    <div></div>
-                    {{else}}
+                    {{#if this.date}}
                     <div class="day-of-month">{{formatDate this.date 'D'}}</div>
                     <div class="calendar-content">
                         {{#unless (isWeekend this.date)}}
@@ -141,7 +138,6 @@
                                         <button type="button" class="btn btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col">
@@ -206,9 +202,11 @@
                                     </div>
                                 </div>
                             </div>
-                            {{/unless}}
                         </div>
-                        {{/ifEquals}}
+
+                        {{/unless}}
+                    </div>
+                    {{/if}}
                 </td>
                 {{/each}}
             </tr>

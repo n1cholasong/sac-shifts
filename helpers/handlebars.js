@@ -4,15 +4,9 @@ const formatDate = function (date, targetFormat) {
     return moment(date).format(targetFormat);
 }
 
+// Not in use
 const ifEquals = function (params1, params2, options) {
     if (params1 == params2) {
-        return options.fn(this);
-    }
-    return options.inverse(this);
-}
-
-const ifMore = function (params1, params2, options) {
-    if (params1 > params2) {
         return options.fn(this);
     }
     return options.inverse(this);
@@ -33,7 +27,7 @@ const isWeekend = function (date) {
     return (day == 0 || day == 6) ? true : false;
 }
 
-const shiftIndex = function (num) {
+const termShiftIndex = function (num) {
     if (num > 3) { return 'text-success fw-bold'; }
     if (num < 3) { return 'text-danger fw-bold'; }
     if (num == 3) { return 'text-warning fw-bold'; }
@@ -43,4 +37,4 @@ const getBatchNo = function (string) {
     return string.slice(6);
 }
 
-module.exports = { formatDate, ifEquals, ifMore, isSAC, isWeekend, shiftIndex, getBatchNo }
+module.exports = { formatDate, isSAC, isWeekend, termShiftIndex, getBatchNo }

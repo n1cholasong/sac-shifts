@@ -36,30 +36,27 @@
             {{#each weeks}}
             {{!-- <tr class="table-light">
                 {{#each this}}
-                {{#ifEquals this.dateString ''}}
+                {{#if this.dateString}}
                 <th></th>
                 {{else}}
                 <th>{{formatDate this.dateString 'D MMM'}}</th>
-                {{/ifEquals}}
+                {{/if}}
                 {{/each}}
             </tr> --}}
             <tr>
                 {{#each this}}
                 <td class="pt-3">
-                    {{#ifEquals this.dateString ''}}
-                    <div></div>
-                    {{else}}
+                    {{#if this.dateString}}
                     <div class="day-of-month">{{formatDate this.dateString 'D'}}</div>
-                    {{/ifEquals}}
-                    {{#if (isWeekend this.dateString)}}
-                    <div></div>
-                    {{else}}
+                    {{/if}}
+
+                    {{#unless (isWeekend this.dateString)}}
                     <div class="calendar-content">
                         {{#if this.sortedShift1}}
                         <div class="mb-3">
                             <h6>
                                 Shfit 1 (<span
-                                    class="{{shiftIndex this.sortedShift1.length}}">{{this.sortedShift1.length}}</span>)
+                                    class="{{termShiftIndex this.sortedShift1.length}}">{{this.sortedShift1.length}}</span>)
                             </h6>
                             <div class="SAC">
                                 <ol>
@@ -74,25 +71,19 @@
                         <div>
                             <h6>
                                 Shfit 2 (<span
-                                    class="{{shiftIndex this.sortedShift2.length}}">{{this.sortedShift2.length}}</span>)
+                                    class="{{termShiftIndex this.sortedShift2.length}}">{{this.sortedShift2.length}}</span>)
                             </h6>
                             <div class="SAC">
                                 <ol>
                                     {{#each this.sortedShift2}}
-                                    {{#ifEquals this.sortedShift2 ''}}
-                                    <div>
-                                        <h6 class="text-danger">No SAC Available!</h6>
-                                    </div>
-                                    {{else}}
                                     <li>{{this.name}}</li>
-                                    {{/ifEquals}}
                                     {{/each}}
                                 </ol>
                             </div>
                         </div>
                         {{/if}}
                     </div>
-                    {{/if}}
+                    {{/unless}}
                 </td>
                 {{/each}}
             </tr>

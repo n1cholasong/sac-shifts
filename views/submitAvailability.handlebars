@@ -94,55 +94,56 @@
                     {{#each weeks}}
                     {{!-- <tr class="table-light">
                         {{#each this}}
-                        {{#ifEquals this ''}}
+                        {{#if this}}
                         <th></th>
                         {{else}}
                         <th>{{formatDate this 'D MMM'}}</th>
-                        {{/ifEquals}}
+                        {{/if}}
                         {{/each}}
                     </tr> --}}
                     <tr>
                         {{#each this}}
-                        {{#ifEquals this ''}}
-                        <td></td>
-                        {{else}}
+                        {{#if this}}
                         <td class="shift-types">
                             <div class="day-of-month">{{formatDate this 'D'}}</div>
-                            {{#if (isWeekend this)}}
-                            <div></div>
-                            {{else}}
+                            {{#unless (isWeekend this)}}
                             <div class="calendar-content">
                                 <div class="d-flex flex-column term-shifts ">
                                     <label for="TS1-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
                                         <input type="checkbox" name="shifts" id="TS1-{{formatDate this 'YYYY-MM-DD'}}"
                                             value="TS1-{{formatDate this 'YYYY-MM-DD'}}">
-                                        <span class="checkbox-label"><i class="fa-solid fa-school mx-1"></i> Shift 1</span>
+                                        <span class="checkbox-label"><i class="fa-solid fa-school mx-1"></i> Shift
+                                            1</span>
                                     </label>
                                     <label for="TS2-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
                                         <input type="checkbox" name="shifts" id="TS2-{{formatDate this 'YYYY-MM-DD'}}"
                                             value="TS2-{{formatDate this 'YYYY-MM-DD'}}">
-                                        <span class="checkbox-label"><i class="fa-solid fa-school mx-1"></i> Shift 2</span>
+                                        <span class="checkbox-label"><i class="fa-solid fa-school mx-1"></i> Shift
+                                            2</span>
                                     </label>
                                 </div>
                                 <div class="d-flex flex-column holiday-shifts d-none">
                                     <label for="HS1-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
                                         <input type="checkbox" name="shifts" id="HS1-{{formatDate this 'YYYY-MM-DD'}}"
                                             value="HS1-{{formatDate this 'YYYY-MM-DD'}}">
-                                        <span class="checkbox-label"><i class="fa-solid fa-umbrella-beach mx-1"></i> Shift
+                                        <span class="checkbox-label"><i class="fa-solid fa-umbrella-beach mx-1"></i>
+                                            Shift
                                             1</span>
                                     </label>
                                     <label for="HS2-{{formatDate this 'YYYY-MM-DD'}}" class="checkbox-item">
                                         <input type="checkbox" name="shifts" id="HS2-{{formatDate this 'YYYY-MM-DD'}}"
                                             value="HS2-{{formatDate this 'YYYY-MM-DD'}}">
-                                        <span class="checkbox-label"><i class="fa-solid fa-umbrella-beach mx-1"></i> Shift
+                                        <span class="checkbox-label"><i class="fa-solid fa-umbrella-beach mx-1"></i>
+                                            Shift
                                             2</span>
                                     </label>
                                 </div>
                             </div>
-
-                            {{/if}}
+                            {{/unless}}
                         </td>
-                        {{/ifEquals}}
+                        {{else}}
+                        <td></td>
+                        {{/if}}
                         {{/each}}
                     </tr>
                     {{/each}}

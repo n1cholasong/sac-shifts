@@ -65,7 +65,7 @@ router.get('/availability', async function (req, res,) {
         cachedAvailability = cacheFunction(airtable.getRecords(), cacheDurationMillisecond);
         res.render('availability', { title, month, selectedMonth });
     } else {
-        const result = [];
+        let result = [];
         
         try {
             result = await cachedAvailability();
