@@ -4,9 +4,16 @@ const formatDate = function (date, targetFormat) {
     return moment(date).format(targetFormat);
 }
 
-// Not in use
 const ifEquals = function (params1, params2, options) {
     if (params1 == params2) {
+        return options.fn(this);
+    }
+    return options.inverse(this);
+}
+
+// Not in use
+const ifMore = function (params1, params2, options) {
+    if (params1 > params2) {
         return options.fn(this);
     }
     return options.inverse(this);
@@ -37,4 +44,4 @@ const getBatchNo = function (string) {
     return string.slice(6);
 }
 
-module.exports = { formatDate, isSAC, isWeekend, termShiftIndex, getBatchNo }
+module.exports = { formatDate, ifEquals, ifMore, isSAC, isWeekend, termShiftIndex }
